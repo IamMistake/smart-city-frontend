@@ -1,0 +1,25 @@
+const prettierConfig = {
+    "arrowParens": "always",
+    "bracketSameLine": false,
+    "objectWrap": "preserve",
+    "bracketSpacing": true,
+    "semi": true,
+    "experimentalOperatorPosition": "end",
+    "experimentalTernaries": false,
+    "singleQuote": false,
+    "jsxSingleQuote": false,
+    "quoteProps": "as-needed",
+    "trailingComma": "all",
+    "singleAttributePerLine": false,
+    "htmlWhitespaceSensitivity": "css",
+    "vueIndentScriptAndStyle": false,
+    "proseWrap": "preserve",
+    "insertPragma": false,
+    "requirePragma": false,
+    "tabWidth": 2,
+    "useTabs": true,
+    "embeddedLanguageFormatting": "auto",
+    "printWidth": 80
+};
+
+export default prettierConfig;

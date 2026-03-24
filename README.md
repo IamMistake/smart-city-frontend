@@ -44,7 +44,8 @@ bun run dev
 
 ## Environment variables
 
-- `VITE_API_BASE_URL` - backend base URL used by axios client
+- `VITE_SPRING_API_BASE_URL` - Spring Boot base URL (default `http://localhost:8080`)
+- `VITE_FASTAPI_API_BASE_URL` - FastAPI base URL (default `http://localhost:8000`)
 
 ## Routing
 
@@ -82,6 +83,7 @@ src/
 
 ## API setup
 
-- `src/services/http/client.ts` configures axios client
+- `src/services/http/createHttpClient.ts` configures shared axios behavior
+- `src/services/http/springClient.ts` and `src/services/http/fastapiClient.ts` target each microservice
 - Request interceptor attaches bearer token from local storage
-- `src/services/api/healthService.ts` includes backend health check for `/api/health/`
+- `src/services/api/healthService.ts` includes per-service and aggregate microservice health checks for `/api/health/`

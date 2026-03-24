@@ -1,13 +1,14 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { Provider } from '@/components/ui/provider'
-import App from './App'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "@fontsource-variable/manrope/wght.css";
+import "./index.css";
+import App from "./App";
+import { AppProviders } from "@/app/providers/AppProviders";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Provider>
-      <App />
-    </Provider>
-  </StrictMode>,
-)
+createRoot(document.getElementById("root")!).render(
+	<StrictMode>
+		<AppProviders>
+			<App />
+		</AppProviders>
+	</StrictMode>,
+);

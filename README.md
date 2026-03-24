@@ -1,73 +1,87 @@
-# React + TypeScript + Vite
+# Smart City Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend application for the Smart City Monitoring Platform.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19
+- Vite 8
+- TypeScript 5
+- Chakra UI v3
+- React Router
+- Axios
+- Bun
 
-## React Compiler
+## Getting started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Install dependencies:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Create environment file:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env
 ```
+
+3. Start development server:
+
+```bash
+bun run dev
+```
+
+## Scripts
+
+- `bun run dev` - start local dev server
+- `bun run build` - type-check build pipeline and create production build
+- `bun run lint` - run eslint with zero warnings allowed
+- `bun run format` - format source files with prettier
+- `bun run preview` - run production preview on port 5000
+- `bun run typecheck` - run TypeScript type checks
+- `bun run check` - lint + typecheck
+
+## Environment variables
+
+- `VITE_API_BASE_URL` - backend base URL used by axios client
+
+## Routing
+
+- `/`
+- `/map`
+- `/emergencies`
+- `/pollution`
+- `/chatbot`
+- `/auth/login`
+- `/auth/register`
+
+## Architecture (hybrid)
+
+```text
+src/
+  app/         # app shell, router, top-level providers
+  components/  # reusable UI and view components
+  constants/   # route constants and app constants
+  context/     # global context providers (light app-level state)
+  hooks/       # reusable hooks
+  models/      # domain models
+  pages/       # route pages
+  services/    # axios http client + API services
+  styles/      # reusable style objects
+  theme/       # chakra theme system/tokens
+  types/       # shared TypeScript types
+  utils/       # pure helper functions
+```
+
+## Theme
+
+- Supports light/dark mode toggle (top-right button)
+- Uses custom dark-green accent palette via Chakra system config
+- Uses white/black centered visual base with semantic tokens
+
+## API setup
+
+- `src/services/http/client.ts` configures axios client
+- Request interceptor attaches bearer token from local storage
+- `src/services/api/healthService.ts` includes backend health check for `/api/health/`

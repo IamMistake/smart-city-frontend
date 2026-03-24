@@ -22,7 +22,14 @@ bun install
 
 2. Create environment file:
 
-```bash
+```powershell
+# PowerShell (Windows)
+Copy-Item .env.example .env
+
+# Command Prompt (Windows)
+copy .env.example .env
+
+# macOS/Linux
 cp .env.example .env
 ```
 
@@ -31,6 +38,8 @@ cp .env.example .env
 ```bash
 bun run dev
 ```
+
+`bun` commands in this README work on Windows, macOS, and Linux.
 
 ## Scripts
 

@@ -11,7 +11,21 @@ import { springClient } from "@/services/http/springClient";
 const HEALTH_ENDPOINT = "/api/health/";
 
 function normalizeStatus(value: string | undefined): ServiceHealthStatus {
-	return value?.toUpperCase() === "UP" ? "UP" : "DOWN";
+	if (!value) {
+		return "DOWN";
+	}
+
+	const normalized = value.toUpperCase();
+
+	if (normalized === "UP") {
+		return "UP";
+	}
+
+	if (normalized === "DOWN") {
+		return "DEGRADED";
+	}
+
+	return "DOWN";
 }
 
 function resolveErrorMessage(error: unknown) {
@@ -27,11 +41,16 @@ async function checkService(
 
 	try {
 		const data = await check();
+		const status = normalizeStatus(data.status);
+		const detailsError = data.error?.trim();
+		const detailsMessage = data.message?.trim();
+
 		return {
 			name,
-			status: normalizeStatus(data.status),
+			status,
 			checkedAt,
 			details: data,
+			error: detailsError || (status !== "UP" ? detailsMessage : undefined),
 		};
 	} catch (error) {
 		return {
@@ -73,13 +92,15 @@ export async function checkAllServicesHealth(): Promise<PlatformHealthReport> {
 		} satisfies ServiceHealthReport;
 	});
 
-	const upCount = services.filter((service) => service.status === "UP").length;
+	const hasUp = services.some((service) => service.status === "UP");
+	const hasDegraded = services.some((service) => service.status === "DEGRADED");
+	const hasDown = services.some((service) => service.status === "DOWN");
 
 	let status: PlatformHealthReport["status"] = "DOWN";
 
-	if (upCount === services.length) {
+	if (hasUp && !hasDegraded && !hasDown) {
 		status = "UP";
-	} else if (upCount > 0) {
+	} else if (hasUp || hasDegraded) {
 		status = "DEGRADED";
 	}
 

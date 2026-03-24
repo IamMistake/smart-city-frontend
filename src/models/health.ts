@@ -1,11 +1,13 @@
 export type HealthResponse = {
 	status: string;
 	service?: string;
+	db_status?: "UP" | "DOWN";
 	message?: string;
+	error?: string;
 	timestamp?: string;
 };
 
-export type ServiceHealthStatus = "UP" | "DOWN";
+export type ServiceHealthStatus = "UP" | "DEGRADED" | "DOWN";
 
 export type PlatformHealthStatus = "UP" | "DEGRADED" | "DOWN";
 

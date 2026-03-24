@@ -51,7 +51,15 @@ export function LandingPage() {
 	}
 
 	function resolveServiceColor(status: ServiceHealthReport["status"]) {
-		return status === "UP" ? "green" : "red";
+		if (status === "UP") {
+			return "green";
+		}
+
+		if (status === "DEGRADED") {
+			return "orange";
+		}
+
+		return "red";
 	}
 
 	return (
@@ -108,6 +116,16 @@ export function LandingPage() {
 										<Text color="fg.muted" fontSize="sm">
 											Checked at: {new Date(service.checkedAt).toLocaleString()}
 										</Text>
+										{service.details?.db_status ? (
+											<Text color="fg.muted" fontSize="sm">
+												DB status: {service.details.db_status}
+											</Text>
+										) : null}
+										{service.details?.message ? (
+											<Text color="fg.muted" fontSize="sm">
+												{service.details.message}
+											</Text>
+										) : null}
 										{service.error ? (
 											<Text color="red.500" fontSize="sm">
 												{service.error}

@@ -46,10 +46,19 @@ bun run dev
 - `bun run dev` - start local dev server
 - `bun run build` - type-check build pipeline and create production build
 - `bun run lint` - run eslint with zero warnings allowed
+- `bun run test` - run the Vitest test suite
 - `bun run format` - format source files with prettier
 - `bun run preview` - run production preview on port 5000
 - `bun run typecheck` - run TypeScript type checks
 - `bun run check` - lint + typecheck
+
+## CI
+
+- GitHub Actions runs on every `push` and `pull_request`.
+- The workflow runs `bun run lint`, `bun run test`, and `bun run build`.
+- The exact required status check name is `Frontend CI / frontend-quality`.
+- GitHub branch protection or rulesets must be configured manually in repository settings if you want that required check to block merges.
+- This repository only defines the workflow; it does not enforce merge blocking until the GitHub rule is turned on.
 
 ## Environment variables
 

@@ -9,13 +9,11 @@ import {
 	Icon,
 } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
-import {
-	FaEnvelope,
-	FaPhone,
-	FaFacebook,
-	FaTwitter,
-	FaInstagram,
-} from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
+import { FaPhone } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
+import { FaTwitter } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 import { ROUTES } from "@/constants/routes";
 
 const navItems = [

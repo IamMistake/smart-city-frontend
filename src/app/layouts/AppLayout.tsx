@@ -1,6 +1,16 @@
-import { Box, Container, Text } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar/Navbar";
+import { Box, Container, Flex, HStack, Link} from "@chakra-ui/react";
+import { NavLink, Outlet } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import { Footer } from "@/components/sections/Footer";
+
+const navItems = [
+	{ label: "Home", to: ROUTES.home },
+	{ label: "Map", to: ROUTES.map },
+	{ label: "Emergencies", to: ROUTES.emergencies },
+	{ label: "Pollution", to: ROUTES.pollution },
+	{ label: "Chatbot", to: ROUTES.chatbot },
+];
 
 export function AppLayout() {
 	return (
@@ -12,13 +22,7 @@ export function AppLayout() {
 				<Outlet />
 			</Container>
 
-			<Box as="footer" borderTopWidth="1px" borderColor="border" py="4">
-				<Container maxW="7xl">
-					<Text color="fg.muted" fontSize="sm">
-						Smart City Monitoring Platform
-					</Text>
-				</Container>
-			</Box>
+			<Footer />
 		</Box>
 	);
 }

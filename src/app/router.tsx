@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { AppLayout } from "@/app/layouts/AppLayout";
+import { RequireSignedInRoute } from "@/components/auth/RequireSignedInRoute";
 import { ROUTES } from "@/constants/routes";
 import { ChatbotPage } from "@/pages/ChatbotPage";
 import { EmergenciesPage } from "@/pages/EmergenciesPage";
@@ -17,9 +18,23 @@ export const router = createBrowserRouter([
 		children: [
 			{ index: true, element: <LandingPage /> },
 			{ path: ROUTES.map, element: <MapPage /> },
-			{ path: ROUTES.emergencies, element: <EmergenciesPage /> },
+			{
+				path: ROUTES.emergencies,
+				element: (
+					<RequireSignedInRoute>
+						<EmergenciesPage />
+					</RequireSignedInRoute>
+				),
+			},
 			{ path: ROUTES.pollution, element: <PollutionPage /> },
-			{ path: ROUTES.chatbot, element: <ChatbotPage /> },
+			{
+				path: ROUTES.chatbot,
+				element: (
+					<RequireSignedInRoute>
+						<ChatbotPage />
+					</RequireSignedInRoute>
+				),
+			},
 			{ path: ROUTES.login, element: <LoginPage /> },
 			{ path: ROUTES.register, element: <RegisterPage /> },
 			{ path: "*", element: <NotFoundPage /> },

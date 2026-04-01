@@ -4,10 +4,12 @@ import {
 	Button,
 	Heading,
 	HStack,
+	Spinner,
 	Stack,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import { useAuth } from "@clerk/react";
 import { useCallback, useEffect, useState } from "react";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { useAppContext } from "@/hooks/useAppContext";
@@ -15,14 +17,34 @@ import type {
 	PlatformHealthReport,
 	ServiceHealthReport,
 } from "@/models/health";
+import {
+	checkFastapiAuthenticatedUser,
+	checkSpringAuthenticatedUser,
+	type AuthenticatedUserResponse,
+} from "@/services/api/authService";
 import { checkAllServicesHealth } from "@/services/api/healthService";
+
+type AuthTestStatus = "idle" | "loading" | "success" | "error";
+
+type AuthTestResult = {
+	status: AuthTestStatus;
+	data?: AuthenticatedUserResponse;
+	error?: string;
+};
 
 export function LandingPage() {
 	const { selectedCity } = useAppContext();
+	const { isLoaded, isSignedIn } = useAuth();
 	const [healthReport, setHealthReport] = useState<PlatformHealthReport | null>(
 		null,
 	);
 	const [isLoading, setIsLoading] = useState(false);
+	const [authTestResults, setAuthTestResults] = useState<
+		Record<ServiceHealthReport["name"], AuthTestResult>
+	>({
+		"spring-service": { status: "idle" },
+		"fastapi-service": { status: "idle" },
+	});
 
 	const handleHealthCheck = useCallback(async () => {
 		setIsLoading(true);
@@ -61,6 +83,38 @@ export function LandingPage() {
 
 		return "red";
 	}
+
+	const handleAuthTest = useCallback(async (serviceName: ServiceHealthReport["name"]) => {
+		setAuthTestResults((current) => ({
+			...current,
+			[serviceName]: { status: "loading" },
+		}));
+
+		try {
+			const data =
+				serviceName === "spring-service"
+					? await checkSpringAuthenticatedUser()
+					: await checkFastapiAuthenticatedUser();
+
+			setAuthTestResults((current) => ({
+				...current,
+				[serviceName]: {
+					status: "success",
+					data,
+				},
+			}));
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "Request failed";
+
+			setAuthTestResults((current) => ({
+				...current,
+				[serviceName]: {
+					status: "error",
+					error: message,
+				},
+			}));
+		}
+	}, []);
 
 	return (
 		<Stack gap={{ base: "8", md: "10" }}>
@@ -102,6 +156,7 @@ export function LandingPage() {
 
 					<Stack gap="3">
 						{healthReport?.services.map((service) => (
+							
 							<Box
 								key={service.name}
 								borderWidth="1px"
@@ -129,6 +184,51 @@ export function LandingPage() {
 										{service.error ? (
 											<Text color="red.500" fontSize="sm">
 												{service.error}
+											</Text>
+										) : null}
+
+										<HStack pt="2" gap="3" align="center" flexWrap="wrap">
+											<Button
+												size="sm"
+												variant="outline"
+												colorPalette="accent"
+												onClick={() => handleAuthTest(service.name)}
+												disabled={!isLoaded || !isSignedIn}
+												loading={authTestResults[service.name].status === "loading"}
+											>
+												Test Auth Endpoint
+											</Button>
+											{!isLoaded ? <Spinner size="sm" colorPalette="accent" /> : null}
+											{isLoaded && !isSignedIn ? (
+												<Text color="fg.muted" fontSize="sm">
+													Sign in to test authenticated endpoint.
+												</Text>
+											) : null}
+										</HStack>
+
+										{authTestResults[service.name].status === "success" ? (
+											<VStack align="start" gap="1" pt="1">
+												<Text color="green.600" fontSize="sm" fontWeight="semibold">
+													Authenticated request succeeded
+												</Text>
+												<Text color="fg.muted" fontSize="sm">
+													Email: {authTestResults[service.name].data?.email}
+												</Text>
+												<Text color="fg.muted" fontSize="sm">
+													Clerk ID: {authTestResults[service.name].data?.clerkUserId}
+												</Text>
+												<Text color="fg.muted" fontSize="sm">
+													Role: {authTestResults[service.name].data?.role}
+												</Text>
+												<Text color="fg.muted" fontSize="sm">
+													Active: {String(authTestResults[service.name].data?.isActive)}
+												</Text>
+											</VStack>
+										) : null}
+
+										{authTestResults[service.name].status === "error" ? (
+											<Text color="red.500" fontSize="sm" pt="1">
+												{authTestResults[service.name].error}
 											</Text>
 										) : null}
 									</VStack>

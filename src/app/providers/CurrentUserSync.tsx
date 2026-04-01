@@ -1,6 +1,7 @@
 import { useAuth } from "@clerk/react";
 import { useEffect, useRef } from "react";
 import { springClient } from "@/services/http/springClient";
+import { isDev } from "@/utils/env";
 
 const clerkJwtTemplate = import.meta.env.VITE_CLERK_JWT_TEMPLATE?.trim();
 
@@ -42,7 +43,9 @@ export function CurrentUserSync() {
 
 				syncedUserIdsRef.current.add(userId);
 			} catch (error) {
-				console.error("Failed to sync current user profile", error);
+				if (isDev()) {
+					console.error("Failed to sync current user profile", error);
+				}
 			} finally {
 				inFlightUserIdsRef.current.delete(userId);
 			}

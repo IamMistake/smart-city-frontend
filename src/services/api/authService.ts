@@ -14,6 +14,34 @@ export type AuthenticatedUserResponse = {
 	isActive: boolean;
 };
 
+type FastapiAuthenticatedUserResponse = {
+	id: string;
+	clerk_user_id: string;
+	email: string;
+	full_name: string | null;
+	role: string;
+	avatar_url: string | null;
+	is_active: boolean;
+};
+
+function normalizeAuthenticatedUser(
+	response: AuthenticatedUserResponse | FastapiAuthenticatedUserResponse,
+): AuthenticatedUserResponse {
+	if ("clerkUserId" in response) {
+		return response;
+	}
+
+	return {
+		id: response.id,
+		clerkUserId: response.clerk_user_id,
+		email: response.email,
+		fullName: response.full_name,
+		role: response.role,
+		avatarUrl: response.avatar_url,
+		isActive: response.is_active,
+	};
+}
+
 function resolveErrorMessage(error: unknown) {
 	const apiError = error as ApiError;
 	return apiError?.message || "Authenticated request failed";
@@ -24,7 +52,7 @@ export async function checkSpringAuthenticatedUser() {
 		const { data } = await springClient.get<AuthenticatedUserResponse>(
 			AUTH_ME_ENDPOINT,
 		);
-		return data;
+		return normalizeAuthenticatedUser(data);
 	} catch (error) {
 		throw new Error(resolveErrorMessage(error));
 	}
@@ -32,10 +60,10 @@ export async function checkSpringAuthenticatedUser() {
 
 export async function checkFastapiAuthenticatedUser() {
 	try {
-		const { data } = await fastapiClient.get<AuthenticatedUserResponse>(
+		const { data } = await fastapiClient.get<FastapiAuthenticatedUserResponse>(
 			AUTH_ME_ENDPOINT,
 		);
-		return data;
+		return normalizeAuthenticatedUser(data);
 	} catch (error) {
 		throw new Error(resolveErrorMessage(error));
 	}

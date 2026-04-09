@@ -22,22 +22,33 @@ export function UserContextProvider({ children }: PropsWithChildren) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
+		let active = true;
+
 		if (isAuthLoaded && isSignedIn) {
-			setIsLoading(true);
+			Promise.resolve().then(() => { if (active) setIsLoading(true); });
 			checkSpringAuthenticatedUser()
 				.then((profile) => {
-					setUserProfile(profile);
+					if (active) setUserProfile(profile);
 				})
 				.catch((err) => {
 					console.error("Failed to fetch user profile", err);
 				})
 				.finally(() => {
-					setIsLoading(false);
+					if (active) setIsLoading(false);
 				});
 		} else if (isAuthLoaded && !isSignedIn) {
-			setUserProfile(null);
-			setIsLoading(false);
+			// Wrap in microtask to avoid synchronous setState inside effect body
+			Promise.resolve().then(() => {
+				if (active) {
+					setUserProfile(null);
+					setIsLoading(false);
+				}
+			});
 		}
+
+		return () => {
+			active = false;
+		};
 	}, [isSignedIn, isAuthLoaded]);
 
 	const role = userProfile?.role ?? null;

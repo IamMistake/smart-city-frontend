@@ -7,6 +7,15 @@ import { normalizeApiError } from "@/types/api";
 import { getAccessToken } from "@/services/http/authToken";
 
 async function attachBearerToken(config: InternalAxiosRequestConfig) {
+	// Skip if explicitly requested or if it's a health check
+	const skipAuth = config.headers.get("X-Skip-Auth") === "true";
+	const isHealthCheck = config.url?.includes("/health");
+
+	if (skipAuth || isHealthCheck) {
+		config.headers.delete("X-Skip-Auth");
+		return config;
+	}
+
 	const token = await getAccessToken();
 
 	if (!token) {

@@ -11,10 +11,10 @@ import { NavLink } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { keyframes } from "@emotion/react";
 
-// Animations for staggered reveal
+// Staggered reveal animation for cards
 const cardReveal = keyframes`
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+	from { opacity: 0; transform: translateY(24px) scale(0.98); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
 const modules = [
@@ -68,14 +68,15 @@ export function ModulesSection() {
 						p={{ base: 5, md: 6 }}
 						bg="bg"
 						boxShadow="0 20px 45px -25px rgba(10, 30, 20, 0.25)"
-						transform="translateY(0)"
+						transform="translateY(0) scale(1)"
 						_hover={{
-							transform: "translateY(-4px)",
-							boxShadow: "0 25px 50px -25px rgba(10, 30, 20, 0.35)",
+							transform: "translateY(-6px) scale(1.02)",
+							boxShadow: "0 25px 50px -20px rgba(10, 30, 20, 0.35)",
 						}}
 						opacity={0}
 						animation={`${cardReveal} 600ms ease-out forwards ${i * 120}ms`}
 						position="relative"
+						transition="transform 0.3s ease, box-shadow 0.3s ease"
 					>
 						{/* Accent badge */}
 						<Badge

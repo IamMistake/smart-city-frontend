@@ -9,7 +9,7 @@ import { getAccessToken } from "@/services/http/authToken";
 async function attachBearerToken(config: InternalAxiosRequestConfig) {
 	// Skip if explicitly requested or if it's a health check
 	const skipAuth = config.headers.get("X-Skip-Auth") === "true";
-	const isHealthCheck = config.url?.includes("/health");
+	const isHealthCheck = config.url === "/health" || config.url === "/api/health/";
 
 	if (skipAuth || isHealthCheck) {
 		config.headers.delete("X-Skip-Auth");

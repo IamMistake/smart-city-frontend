@@ -1,9 +1,9 @@
 import { Heading, Text, VStack, Box, Icon } from "@chakra-ui/react";
-import { useUserContext } from "@/context/UserContext";
+import { useAppContext } from "@/context/AppContext";
 import { LuShieldCheck } from "react-icons/lu";
 
 export function PollutionPage() {
-	const { role } = useUserContext();
+	const { role } = useAppContext();
 	const isAdmin = role === "ADMIN" || role === "OPERATOR";
 
 	return (

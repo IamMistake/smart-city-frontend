@@ -4,10 +4,10 @@ import axios, {
 	type InternalAxiosRequestConfig,
 } from "axios";
 import { normalizeApiError } from "@/types/api";
-import { getAccessToken } from "@/utils/storage";
+import { getAccessToken } from "@/services/http/authToken";
 
-function attachBearerToken(config: InternalAxiosRequestConfig) {
-	const token = getAccessToken();
+async function attachBearerToken(config: InternalAxiosRequestConfig) {
+	const token = await getAccessToken();
 
 	if (!token) {
 		return config;
@@ -33,7 +33,7 @@ export function createHttpClient(baseURL: string): AxiosInstance {
 		},
 	});
 
-	client.interceptors.request.use((config) => attachBearerToken(config));
+	client.interceptors.request.use(async (config) => attachBearerToken(config));
 	client.interceptors.response.use(
 		(response) => response,
 		(error) => Promise.reject(normalizeApiError(error)),

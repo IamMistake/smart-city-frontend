@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint . --max-warnings=0",
+    "test": "vitest run",
     "format": "prettier \"src/**/*.{ts,tsx,css,html,md}\" --write",
     "preview": "vite preview --port 5000 --strictPort",
     "typecheck": "tsc --noEmit",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.34.0",
+    "@clerk/react": "^6.2.1",
     "@emotion/react": "^11.14.0",
     "@fontsource-variable/manrope": "^5.2.8",
     "axios": "^1.13.6",
@@ -37,6 +39,7 @@
     "prettier": "^3.8.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "vitest": "^4.0.8"
   }
 }

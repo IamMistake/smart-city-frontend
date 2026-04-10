@@ -3,8 +3,7 @@ import type {FeatureCollection} from "geojson";
 
 export function addPollutionLayer(map: maplibregl.Map, data?: FeatureCollection) {
 
-    if (map.getSource("pollution"))
-    {
+    if (map.getSource("pollution")) {
         return;
     }
 

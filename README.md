@@ -46,15 +46,26 @@ bun run dev
 - `bun run dev` - start local dev server
 - `bun run build` - type-check build pipeline and create production build
 - `bun run lint` - run eslint with zero warnings allowed
+- `bun run test` - run the Vitest test suite
 - `bun run format` - format source files with prettier
 - `bun run preview` - run production preview on port 5000
 - `bun run typecheck` - run TypeScript type checks
 - `bun run check` - lint + typecheck
 
+## CI
+
+- GitHub Actions runs on every `push` and `pull_request`.
+- The workflow runs `bun run lint`, `bun run test`, and `bun run build`.
+- The exact required status check name is `Frontend CI / frontend-quality`.
+- GitHub branch protection or rulesets must be configured manually in repository settings if you want that required check to block merges.
+- This repository only defines the workflow; it does not enforce merge blocking until the GitHub rule is turned on.
+
 ## Environment variables
 
 - `VITE_SPRING_API_BASE_URL` - Spring Boot base URL (default `http://localhost:8080`)
 - `VITE_FASTAPI_API_BASE_URL` - FastAPI base URL (default `http://localhost:8000`)
+- `VITE_CLERK_PUBLISHABLE_KEY` - Clerk publishable key for the React app
+- `VITE_CLERK_JWT_TEMPLATE` - optional Clerk JWT template name used when requesting backend tokens
 
 ## Routing
 
@@ -94,5 +105,7 @@ src/
 
 - `src/services/http/createHttpClient.ts` configures shared axios behavior
 - `src/services/http/springClient.ts` and `src/services/http/fastapiClient.ts` target each microservice
-- Request interceptor attaches bearer token from local storage
+- Request interceptor attaches Clerk bearer token from `ClerkAuthBridge`
+- `src/app/providers/CurrentUserSync.tsx` calls Spring `/api/auth/me` after login to provision/sync the local backend user
 - `src/services/api/healthService.ts` includes per-service and aggregate microservice health checks for `/api/health/`
+- Landing page backend cards include a `Test Auth Endpoint` button for `/api/auth/me` on each service

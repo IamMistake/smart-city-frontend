@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import {
   Box, Heading, Text, VStack, HStack,
   Spinner, Alert, Badge, Separator,
@@ -23,45 +23,57 @@ function isInMacedonia(lat: number, lng: number): boolean {
   );
 }
 
-
 function formatSensorName(stationId: string, name: string): string {
   if (name === stationId) {
-    // "sensor_dev_78308_493" → "78308-493"
     const parts = stationId.replace("sensor_dev_", "").split("_");
     return parts.length >= 2 ? `Sensor ${parts.join("-")}` : stationId;
   }
   return name;
 }
 
+type State =
+  | { status: "loading"; data: null; error: null }
+  | { status: "error";   data: null; error: string }
+  | { status: "success"; data: PollutionData; error: null };
+
+type Action =
+  | { type: "FETCH_START" }
+  | { type: "FETCH_SUCCESS"; payload: PollutionData }
+  | { type: "FETCH_ERROR";   payload: string };
+
+function reducer(_state: State, action: Action): State {
+  switch (action.type) {
+    case "FETCH_START":   return { status: "loading", data: null,          error: null };
+    case "FETCH_SUCCESS": return { status: "success", data: action.payload, error: null };
+    case "FETCH_ERROR":   return { status: "error",   data: null,           error: action.payload };
+  }
+}
+
 export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetProps) {
-  const [data,    setData]    = useState<PollutionData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error,   setError]   = useState<string | null>(null);
+  const [state, dispatch] = useReducer(reducer, { status: "loading", data: null, error: null });
+
+  const onDataLoadedRef = useRef(onDataLoaded);
+  useEffect(() => { onDataLoadedRef.current = onDataLoaded; });
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
-    setData(null);
+    dispatch({ type: "FETCH_START" });
 
-    fetchPollutionData(metric, city)
+    fetchPollutionData(metric)
       .then((res) => {
         if (cancelled) return;
-        setData(res);
-        onDataLoaded?.(res);
+        dispatch({ type: "FETCH_SUCCESS", payload: res });
+        onDataLoadedRef.current?.(res);
       })
       .catch((err: Error) => {
         if (cancelled) return;
-        setError(err.message);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        dispatch({ type: "FETCH_ERROR", payload: err.message });
       });
 
     return () => { cancelled = true; };
   }, [city, metric]);
 
-  if (loading) {
+  if (state.status === "loading") {
     return (
       <HStack justify="center" p="8">
         <Spinner size="lg" />
@@ -70,19 +82,19 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
     );
   }
 
-  if (error) {
+  if (state.status === "error") {
     return (
       <Alert.Root status="error" borderRadius="md">
         <Alert.Indicator />
         <Alert.Content>
           <Alert.Title>Could not load pollution data</Alert.Title>
-          <Alert.Description>{error}</Alert.Description>
+          <Alert.Description>{state.error}</Alert.Description>
         </Alert.Content>
       </Alert.Root>
     );
   }
 
-  if (!data) return null;
+  const { data } = state;
 
   const validStations = data.stations.filter((s) =>
     isInMacedonia(s.position.lat, s.position.lng)
@@ -107,7 +119,6 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
       borderRadius="lg"
       bg="bg.panel"
     >
-      {/* Header */}
       <HStack justify="space-between" wrap="wrap" gap="2">
         <Heading size="md" letterSpacing="-0.3px">
           {data.city.charAt(0).toUpperCase() + data.city.slice(1)} — {data.metric.toUpperCase()}
@@ -117,12 +128,11 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
             <Badge colorPalette="orange" variant="subtle">Stale</Badge>
           )}
           <Badge variant="subtle" fontSize="xs">
-                {validStations.length} station{validStations.length !== 1 ? "s" : ""}
+            {validStations.length} station{validStations.length !== 1 ? "s" : ""}
           </Badge>
         </HStack>
       </HStack>
 
-      {/* Non-fatal backend errors */}
       {data.errors.length > 0 && (
         <Alert.Root status="warning" borderRadius="md" size="sm">
           <Alert.Indicator />
@@ -132,7 +142,6 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
         </Alert.Root>
       )}
 
-      {/* No data available state */}
       {!hasStations && !hasCityValue ? (
         <Alert.Root status="info" borderRadius="md">
           <Alert.Indicator />
@@ -146,7 +155,6 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
         </Alert.Root>
       ) : (
         <>
-          {/* City summary */}
           <HStack gap="3" align="center">
             <Box
               w="52px" h="52px" borderRadius="full"
@@ -168,19 +176,17 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
 
           <Separator />
 
-          {/* Legend */}
           <Box>
             <Heading size="sm" mb="2">Scale</Heading>
             <LegendBar legend={getLegendForMetric(data.metric)} />
           </Box>
 
-          {/* Stations */}
           {hasStations && (
             <>
               <Separator />
               <Box>
                 <Heading size="sm" mb="2">
-                  Stations ({data.stations.length})
+                  Stations ({validStations.length})
                 </Heading>
                 <VStack align="stretch" gap="2">
                   {validStations.map((station) => {
@@ -233,7 +239,6 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
         </>
       )}
 
-      {/* Footer */}
       <Text fontSize="xs" color="fg.muted">
         Source: {data.source} · Fetched at {new Date(data.fetchedAt).toLocaleTimeString()}
         {data.coverage.interpolationEnabled && " · Interpolation enabled"}

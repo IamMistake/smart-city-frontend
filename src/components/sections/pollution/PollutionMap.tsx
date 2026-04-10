@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import type { FC } from "react";
 import type { LegendItem, Station, PollutionMetric } from "@/models/pollution";
 
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl:       "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -17,7 +17,6 @@ const SKOPJE    = { lat: 41.9981, lng: 21.4254 };
 const SENSOR_NAMES: Record<string, string> = {
   "sensor_dev_78308_493": "Butel 1",
   "sensor_dev_78844_374": "Centar",
-  // додај уште по потреба
 };
 
 function formatSensorName(stationId: string, name: string): string {
@@ -28,6 +27,7 @@ function formatSensorName(stationId: string, name: string): string {
   }
   return name;
 }
+
 const DARK_TILE  = "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png";
 const LIGHT_TILE = "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png";
 
@@ -55,7 +55,6 @@ function getLegendLabel(value: number, legend: LegendItem[]): string {
   return legend.find((l) => value >= l.from && value <= l.to)?.label ?? "—";
 }
 
-// All metrics from models/pollution.ts including new ones
 const METRIC_ICONS: Record<PollutionMetric, string> = {
   pm10:        "💨",
   pm25:        "🌫️",
@@ -159,7 +158,6 @@ export const PollutionMap: FC<PollutionMapProps> = ({
           const label = getLegendLabel(station.current.value, legend);
           const icon  = METRIC_ICONS[metric];
 
-          // measuredAt can be null per backend model
           const timeLabel = station.current.measuredAt
             ? new Date(station.current.measuredAt).toLocaleTimeString([], {
                 hour: "2-digit",
@@ -187,7 +185,6 @@ export const PollutionMap: FC<PollutionMapProps> = ({
                   borderRadius: 14,
                   padding: "14px 16px",
                 }}>
-                  {/* Station name */}
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                     <div style={{
                       width: 10, height: 10, borderRadius: "50%", flexShrink: 0,
@@ -198,7 +195,6 @@ export const PollutionMap: FC<PollutionMapProps> = ({
                     </span>
                   </div>
 
-                  {/* Value card */}
                   <div style={{
                     display: "flex", alignItems: "center", justifyContent: "space-between",
                     background: `${color}18`, border: `1px solid ${color}33`,
@@ -227,7 +223,6 @@ export const PollutionMap: FC<PollutionMapProps> = ({
                     </div>
                   </div>
 
-                  {/* Time */}
                   {timeLabel && (
                     <div style={{ fontSize: 11, color: timeClr, textAlign: "right" }}>
                       {timeLabel}
@@ -240,7 +235,6 @@ export const PollutionMap: FC<PollutionMapProps> = ({
         })}
       </MapContainer>
 
-      {/* Legend bar */}
       {legend.length > 0 && (
         <div style={{
           position: "absolute", bottom: 14, left: "50%", transform: "translateX(-50%)",

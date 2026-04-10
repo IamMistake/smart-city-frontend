@@ -13,6 +13,8 @@ import { ModulesSection } from "@/components/sections/ModulesSection";
 import { useAuth } from "@clerk/react";
 import { useCallback, useEffect, useState } from "react";
 import { HeroSection } from "@/components/sections/HeroSection";
+import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
+import { BenefitsSection } from "@/components/sections/BenefitsSection";
 import { useAppContext } from "@/hooks/useAppContext";
 import type {
 	PlatformHealthReport,
@@ -125,6 +127,8 @@ export function LandingPage() {
 		<Stack gap={{ base: "8", md: "10" }}>
 			<HeroSection city={selectedCity} />
 			<ModulesSection />
+			<HowItWorksSection />
+			<BenefitsSection />
 
 			<Box
 				as="section"

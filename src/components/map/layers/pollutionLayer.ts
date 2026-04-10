@@ -3,14 +3,14 @@ import type {FeatureCollection} from "geojson";
 
 export function addPollutionLayer(map: maplibregl.Map, data?: FeatureCollection) {
 
-    if (map.getSource("pollution")) {
+    if (map.getSource("pollution"))
+    {
         return;
     }
 
-    const pollutionData: FeatureCollection =
-        data ?? {
-           type: "FeatureCollection",
-           features: [],
+    const pollutionData: FeatureCollection = data ?? {
+        type: "FeatureCollection",
+        features: [],
     };
 
     map.addSource("pollution", {
@@ -24,23 +24,26 @@ export function addPollutionLayer(map: maplibregl.Map, data?: FeatureCollection)
         source: "pollution",
         paint: {
             "circle-radius": [
-                "interpolate",
-                ["linear"],
+                "match",
                 ["get", "level"],
-                1, 6,
-                5, 18,
+                1, 16,
+                2, 22,
+                3, 28,
+                16,
             ],
 
             "circle-color": [
                 "interpolate",
                 ["linear"],
                 ["get", "level"],
-                1, "#2ecc71",
-                3, "#f1c40f",
-                5, "#e74c3c",
+                1, "#132dd1",
+                2, "#f3de4c",
+                3, "#3ce74d"
             ],
-            "circle-opacity": 0.4,
-            "circle-blur": 0.6,
+            "circle-opacity": 0.75,
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#111",
+            "circle-blur": 0.25
         },
     });
 }

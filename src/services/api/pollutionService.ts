@@ -55,7 +55,6 @@ async function apiFetch<T>(path: string): Promise<T> {
 
 export async function fetchPollutionData(
   metric: PollutionMetric,
-  _city: string,
 ): Promise<PollutionData> {
   return apiFetch<PollutionData>(
     `/api/pollution/current?metric=${encodeURIComponent(metric)}`

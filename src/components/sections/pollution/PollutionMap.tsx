@@ -10,7 +10,7 @@ import type { FC } from "react";
 import type { LegendItem, Station, PollutionMetric } from "@/models/pollution";
 import { useToken } from "@chakra-ui/react";
 import { SKOPJE, DARK_TILE, LIGHT_TILE, METRIC_ICONS } from "@/constants/metrics";
-import { useIsDark, AutoFitBounds, isInMacedonia, getColor, getLegendLabel } from "@/utils/mapUtils";
+import { useIsDark, AutoFitBounds, isInMacedonia, getColor, getLegendLabel, formatSensorName } from "@/utils/mapUtils";
 
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)
   ._getIconUrl;
@@ -110,57 +110,119 @@ export const PollutionMap: FC<PollutionMapProps> = ({
                   fillOpacity: 0.22,
                 }}
               >
-                <Popup closeButton={false}>
-                  <div
+                <Popup className="pulse-popup" closeButton={false}>
+                <div
                     style={{
-                      minWidth: 175,
-                      background: popupBg,
-                      borderRadius: 14,
-                      padding: "14px 16px",
+                    fontFamily: '"Manrope Variable", Manrope, sans-serif',
+                    minWidth: 175,
+                    background: popupBg,
+                    borderRadius: 14,
+                    padding: "14px 16px",
                     }}
-                  >
+                >
                     <div
-                      style={{
-                        fontSize: 10,
-                        color: subClr,
-                        marginBottom: 4,
-                      }}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        marginBottom: 10,
+                    }}
                     >
-                      {icon} Current
-                    </div>
-
                     <div
-                      style={{
-                        fontSize: 26,
-                        fontWeight: 800,
-                        color: valClr,
-                      }}
-                    >
-                      {station.current.value} {unit}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: subClr,
-                        marginTop: 4,
-                      }}
-                    >
-                      {label}
-                    </div>
-
-                    {timeLabel && (
-                      <div
                         style={{
-                          fontSize: 11,
-                          color: timeClr,
-                          textAlign: "right",
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: color,
+                        boxShadow: `0 0 8px ${color}`,
+                        flexShrink: 0,
                         }}
-                      >
+                    />
+
+                    <span
+                        style={{
+                        fontWeight: 700,
+                        fontSize: 14,
+                        }}
+                    >
+                        {formatSensorName(station.stationId, station.name)}
+                    </span>
+                    </div>
+
+                    <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        background: `${color}18`,
+                        border: `1px solid ${color}33`,
+                        borderRadius: 10,
+                        padding: "10px 14px",
+                        marginBottom: 8,
+                    }}
+                    >
+                    <div>
+                        <div
+                        style={{
+                            fontSize: 10,
+                            color: subClr,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.8px",
+                            marginBottom: 2,
+                        }}
+                        >
+                        {icon} Current
+                        </div>
+
+                        <div
+                        style={{
+                            fontSize: 26,
+                            fontWeight: 800,
+                            color: valClr,
+                            lineHeight: 1.1,
+                        }}
+                        >
+                        {station.current.value}
+                        <span
+                            style={{
+                            fontSize: 12,
+                            fontWeight: 400,
+                            color: subClr,
+                            marginLeft: 3,
+                            }}
+                        >
+                            {unit}
+                        </span>
+                        </div>
+                    </div>
+
+                    <div
+                        style={{
+                        background: color,
+                        color: "#fff",
+                        padding: "4px 10px",
+                        borderRadius: 100,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        }}
+                    >
+                        {label}
+                    </div>
+                    </div>
+
+                    {/* TIME */}
+                    {timeLabel && (
+                    <div
+                        style={{
+                        fontSize: 11,
+                        color: timeClr,
+                        textAlign: "right",
+                        }}
+                    >
                         {timeLabel}
-                      </div>
+                    </div>
                     )}
-                  </div>
+                </div>
                 </Popup>
               </CircleMarker>
             );

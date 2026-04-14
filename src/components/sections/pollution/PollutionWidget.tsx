@@ -1,12 +1,12 @@
 import { useEffect, useReducer, useRef } from "react";
+import { Skeleton } from "@chakra-ui/react";
 import {
-  Box, Heading, Text, VStack, HStack,
-  Spinner, Alert, Badge, Separator,
+  Box, Heading, Text, VStack, HStack, Alert, Badge, Separator,
 } from "@chakra-ui/react";
 import type { PollutionData, PollutionMetric } from "@/models/pollution";
 import { fetchPollutionData } from "@/services/api/pollutionService";
 import { LegendBar } from "@/components/sections/pollution/LegendBar";
-import { getLegendForMetric } from "@/models/pollutionLegend";
+import { getLegendForMetric, isInMacedonia, formatSensorName, reducer } from "@/utils/mapUtils"; 
 
 interface PollutionWidgetProps {
   city: string;
@@ -14,40 +14,6 @@ interface PollutionWidgetProps {
   onDataLoaded?: (data: PollutionData) => void;
 }
 
-const MK_BBOX = { latMin: 40.8, latMax: 42.4, lngMin: 20.4, lngMax: 23.1 };
-
-function isInMacedonia(lat: number, lng: number): boolean {
-  return (
-    lat >= MK_BBOX.latMin && lat <= MK_BBOX.latMax &&
-    lng >= MK_BBOX.lngMin && lng <= MK_BBOX.lngMax
-  );
-}
-
-function formatSensorName(stationId: string, name: string): string {
-  if (name === stationId) {
-    const parts = stationId.replace("sensor_dev_", "").split("_");
-    return parts.length >= 2 ? `Sensor ${parts.join("-")}` : stationId;
-  }
-  return name;
-}
-
-type State =
-  | { status: "loading"; data: null; error: null }
-  | { status: "error";   data: null; error: string }
-  | { status: "success"; data: PollutionData; error: null };
-
-type Action =
-  | { type: "FETCH_START" }
-  | { type: "FETCH_SUCCESS"; payload: PollutionData }
-  | { type: "FETCH_ERROR";   payload: string };
-
-function reducer(_state: State, action: Action): State {
-  switch (action.type) {
-    case "FETCH_START":   return { status: "loading", data: null,          error: null };
-    case "FETCH_SUCCESS": return { status: "success", data: action.payload, error: null };
-    case "FETCH_ERROR":   return { status: "error",   data: null,           error: action.payload };
-  }
-}
 
 export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetProps) {
   const [state, dispatch] = useReducer(reducer, { status: "loading", data: null, error: null });
@@ -55,32 +21,69 @@ export function PollutionWidget({ city, metric, onDataLoaded }: PollutionWidgetP
   const onDataLoadedRef = useRef(onDataLoaded);
   useEffect(() => { onDataLoadedRef.current = onDataLoaded; });
 
-  useEffect(() => {
-    let cancelled = false;
-    dispatch({ type: "FETCH_START" });
+useEffect(() => {
+  console.log("🔍 Effect running", { metric, city });
+  let cancelled = false;
+  dispatch({ type: "FETCH_START" });
 
-    fetchPollutionData(metric)
-      .then((res) => {
-        if (cancelled) return;
-        dispatch({ type: "FETCH_SUCCESS", payload: res });
-        onDataLoadedRef.current?.(res);
-      })
-      .catch((err: Error) => {
-        if (cancelled) return;
-        dispatch({ type: "FETCH_ERROR", payload: err.message });
-      });
+  fetchPollutionData(metric)
+    .then((res) => {
+      console.log("✅ Fetch success", res);
+      if (cancelled) return;
+      dispatch({ type: "FETCH_SUCCESS", payload: res });
+      onDataLoadedRef.current?.(res);
+    })
+    .catch((err: Error) => {
+      console.error("❌ Fetch error", err);
+      if (cancelled) return;
+      dispatch({ type: "FETCH_ERROR", payload: err.message });
+    });
 
-    return () => { cancelled = true; };
-  }, [city, metric]);
+  return () => { cancelled = true; };
+}, [city, metric]);
 
-  if (state.status === "loading") {
-    return (
-      <HStack justify="center" p="8">
-        <Spinner size="lg" />
-        <Text color="fg.muted">Loading {metric.toUpperCase()} data…</Text>
+ if (state.status === "loading") {
+  return (
+    <VStack
+      align="stretch"
+      gap="4"
+      border="1px solid"
+      borderColor="border"
+      p="5"
+      borderRadius="lg"
+      bg="bg.panel"
+    >
+      {/* header */}
+      <HStack justify="space-between">
+        <Skeleton height="22px" width="180px" />
+        <Skeleton height="20px" width="80px" borderRadius="md" />
       </HStack>
-    );
-  }
+
+      {/* city value */}
+      <HStack gap="3">
+        <Skeleton
+          height="52px"
+          width="52px"
+          borderRadius="full"
+        />
+        <VStack align="start" gap="2">
+          <Skeleton height="16px" width="120px" />
+          <Skeleton height="14px" width="160px" />
+        </VStack>
+      </HStack>
+
+      {/* legend */}
+      <Skeleton height="12px" width="100%" borderRadius="md" />
+
+      {/* stations */}
+      <VStack gap="2">
+        <Skeleton height="48px" borderRadius="md" />
+        <Skeleton height="48px" borderRadius="md" />
+        <Skeleton height="48px" borderRadius="md" />
+      </VStack>
+    </VStack>
+  );
+}
 
   if (state.status === "error") {
     return (

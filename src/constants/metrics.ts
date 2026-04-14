@@ -59,14 +59,42 @@ export const METRIC_LEGENDS: Record<PollutionMetric, LegendItem[]> = {
   ],
 };
 
-export function getLegendForMetric(metric: PollutionMetric): LegendItem[] {
-  return METRIC_LEGENDS[metric];
-}
+export const METRICS: { key: PollutionMetric; label: string; icon: string }[] = [
+  { key: "pm10",        label: "PM10",        icon: "💨" },
+  { key: "pm25",        label: "PM2.5",       icon: "🌫️" },
+  { key: "pm1",         label: "PM1",         icon: "🔬" },
+  { key: "no2",         label: "NO₂",         icon: "🏭" },
+  { key: "o3",          label: "O₃",          icon: "☁️" },
+  { key: "temperature", label: "Temperature", icon: "🌡️" },
+  { key: "humidity",    label: "Humidity",    icon: "💧" },
+  { key: "pressure",    label: "Pressure",    icon: "🔵" },
+  { key: "noise_dba",   label: "Noise",       icon: "🔊" },
+];
+export const CITY = "Skopje";
 
-export function getColorForValue(value: number, legend: LegendItem[]): string {
-  return legend.find((l) => value >= l.from && value <= l.to)?.color ?? "#888";
-}
+export const MK_BBOX = {
+  latMin: 40.8,
+  latMax: 42.4,
+  lngMin: 20.4,
+  lngMax: 23.1,
+};
 
-export function getLabelForValue(value: number, legend: LegendItem[]): string {
-  return legend.find((l) => value >= l.from && value <= l.to)?.label ?? "—";
-}
+export const METRIC_ICONS: Record<PollutionMetric, string> = {
+  pm10: "💨",
+  pm25: "🌫️",
+  pm1: "🔬",
+  no2: "🏭",
+  o3: "☁️",
+  temperature: "🌡️",
+  humidity: "💧",
+  pressure: "🔵",
+  noise_dba: "🔊",
+};
+
+export const SKOPJE = { lat: 41.9981, lng: 21.4254 };
+
+export const DARK_TILE =
+  "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png";
+
+export const LIGHT_TILE =
+  "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png";

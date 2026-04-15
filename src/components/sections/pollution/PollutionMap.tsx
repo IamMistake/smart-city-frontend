@@ -10,7 +10,8 @@ import type { FC } from "react";
 import type { LegendItem, Station, PollutionMetric } from "@/models/pollution";
 import { useToken } from "@chakra-ui/react";
 import { SKOPJE, DARK_TILE, LIGHT_TILE, METRIC_ICONS } from "@/constants/metrics";
-import { useIsDark, AutoFitBounds, isInMacedonia, getColor, getLegendLabel, formatSensorName } from "@/utils/mapUtils";
+import { AutoFitBounds, isInMacedonia, getColor, getLegendLabel, formatSensorName } from "@/utils/mapUtils";
+import { useIsDark } from "@/utils/globalUtils";
 
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)
   ._getIconUrl;

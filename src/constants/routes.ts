@@ -6,4 +6,7 @@ export const ROUTES = {
 	chatbot: "/chatbot",
 	login: "/auth/login",
 	register: "/auth/register",
+	error: "/error",
 } as const;
+
+export const ALL_ROLES = ["CITIZEN", "OPERATOR", "AUTHORITY", "ADMIN"] as const;

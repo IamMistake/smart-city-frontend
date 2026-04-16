@@ -5,7 +5,7 @@ import { ROUTES } from "@/constants/routes";
 import { useAppContext } from "@/context/AppContext";
 
 type RequireRoleRouteProps = PropsWithChildren<{
-	allowedRoles: string[];
+	allowedRoles: readonly string[];
 }>;
 
 export function RequireRoleRoute({
@@ -30,7 +30,7 @@ export function RequireRoleRoute({
 	}
 
 	if (role && !allowedRoles.includes(role)) {
-		return <Navigate to={ROUTES.home} replace />;
+		return <Navigate to={ROUTES.error} replace />;
 	}
 
 	return children;

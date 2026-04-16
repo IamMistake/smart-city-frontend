@@ -1,6 +1,6 @@
-import { Button, Center, Heading, Text, VStack } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "@/constants/routes";
+import {Button, Center, Heading, Text, VStack} from "@chakra-ui/react";
+import {useNavigate} from "react-router-dom";
+import {ROUTES} from "@/constants/routes";
 
 export function ErrorPage() {
     const navigate = useNavigate();
@@ -8,13 +8,13 @@ export function ErrorPage() {
     return (
         <Center h="100vh">
             <VStack gap="4">
-                <Heading size="2xl">403</Heading>
-                <Heading size="md">Access Denied</Heading>
-                <Text color="fg.muted">
-                    You don't have permission to view this page.
+                <Heading size="2xl">Oops!</Heading>
+                <Heading size="md">Something went wrong</Heading>
+                <Text color="fg.muted" maxW="sm">
+                    We couldn’t load this page. Try going back home or refreshing the page.
                 </Text>
                 <Button onClick={() => navigate(ROUTES.home)}>
-                    Go Home
+                    Back
                 </Button>
             </VStack>
         </Center>

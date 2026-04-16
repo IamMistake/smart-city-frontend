@@ -12,6 +12,7 @@ describe("ROUTES", () => {
 			chatbot: "/chatbot",
 			login: "/auth/login",
 			register: "/auth/register",
+			error: "/error/",
 		});
 	});
 });

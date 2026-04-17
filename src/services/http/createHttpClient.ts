@@ -1,8 +1,9 @@
-import axios, {
+/* import axios, {
 	AxiosHeaders,
 	type AxiosInstance,
 	type InternalAxiosRequestConfig,
-} from "axios";
+} from "axios"; */
+import axios, { type AxiosInstance } from "axios";
 import { normalizeApiError } from "@/types/api";
 import { getAccessToken } from "@/services/http/authToken";
 

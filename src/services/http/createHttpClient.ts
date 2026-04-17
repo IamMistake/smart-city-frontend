@@ -6,7 +6,7 @@ import axios, {
 import { normalizeApiError } from "@/types/api";
 import { getAccessToken } from "@/services/http/authToken";
 
-async function attachBearerToken(config: InternalAxiosRequestConfig) {
+/* async function attachBearerToken(config: InternalAxiosRequestConfig) {
 	const token = await getAccessToken();
 
 	if (!token) {
@@ -22,7 +22,7 @@ async function attachBearerToken(config: InternalAxiosRequestConfig) {
 	config.headers = headers;
 
 	return config;
-}
+} */
 
 export function createHttpClient(baseURL: string): AxiosInstance {
 	const client = axios.create({

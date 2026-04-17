@@ -1,38 +1,49 @@
-import type { Incident, IncidentPriority } from "../../models/incident";
+import type {
+  Incident,
+  IncidentPriority,
+  IncidentType,
+} from "../../models/incident";
 
-const BASE_URL = "http://localhost:8080/api/incidents";
+import { springClient } from "../http/springClient";
+
+const BASE_URL = "/api/incidents";
 
 export const getIncidents = async (): Promise<Incident[]> => {
-  const res = await fetch(BASE_URL);
-  console.log("Fetching incidents...", res);
+  try {
+    console.log("Calling API...");
 
-  if (!res.ok) {
+    const res = await springClient.get(
+    "http://localhost:8080/api/incidents"
+    );
+
+    console.log("Response:", res);
+    return res.data;
+  } catch (error) {
+    console.error("Failed to fetch incidents:", error);
+
     throw new Error("Failed to fetch incidents");
   }
-
-  return res.json();
 };
 
 export const createIncident = async (
   title: string,
   description: string,
-  priority: IncidentPriority
+  priority: IncidentPriority,
+  type: IncidentType
 ): Promise<Incident> => {
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  try {
+    const res = await springClient.post(BASE_URL, {
       title,
       description,
       priority,
-    }),
-  });
+      type,
+    });
 
-  if (!res.ok) {
+    return res.data;
+  } catch (error) {
+    console.error("Failed to create incident:", error);
+
     throw new Error("Failed to create incident");
   }
-
-  return res.json();
 };
+

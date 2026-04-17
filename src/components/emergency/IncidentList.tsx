@@ -1,20 +1,12 @@
 import type { Incident } from "../../models/incident";
 import { Box, Text, VStack, Badge, Heading, HStack } from "@chakra-ui/react";
+import {
+  STATUS_COLOR_MAP,
+  PRIORITY_COLOR_MAP,
+} from "../../constants/incidentColors";
 
 type Props = {
   incidents: Incident[];
-};
-
-const statusColorMap: Record<string, string> = {
-  ACTIVE: "green.500",
-  RESOLVED: "gray.400",
-};
-
-const priorityColorMap: Record<string, string> = {
-  CRITICAL: "red.500",
-  HIGH: "orange.400",
-  MEDIUM: "yellow.400",
-  LOW: "green.200",
 };
 
 export default function IncidentList({ incidents }: Props) {
@@ -35,11 +27,11 @@ export default function IncidentList({ incidents }: Props) {
           <Heading size="md">{incident.title}</Heading>
 
           <HStack mt="2" gap="3">
-            <Badge bg={statusColorMap[incident.status]} color="white">
+            <Badge bg={STATUS_COLOR_MAP[incident.status]} color="white">
               {incident.status}
             </Badge>
 
-            <Badge bg={priorityColorMap[incident.priority]} color="white">
+            <Badge bg={PRIORITY_COLOR_MAP[incident.priority]} color="white">
               {incident.priority}
             </Badge>
           </HStack>

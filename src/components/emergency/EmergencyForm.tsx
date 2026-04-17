@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box, Input, Button, Text, VStack } from "@chakra-ui/react";
-import type { IncidentPriority } from "../../models/incident";
+import type { IncidentPriority, IncidentType } from "../../models/incident";
 import { createIncident } from "../../services/api/emergencyService";
 
 type Props = {
@@ -11,6 +11,7 @@ export default function EmergencyForm({ onCreated }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<IncidentPriority>("LOW");
+  const [type, setType] = useState<IncidentType>("OTHER");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,7 +19,7 @@ export default function EmergencyForm({ onCreated }: Props) {
 
     try {
       setLoading(true);
-      await createIncident(title, description, priority);
+      await createIncident(title, description, priority, type);
 
       setTitle("");
       setDescription("");
@@ -76,6 +77,22 @@ export default function EmergencyForm({ onCreated }: Props) {
             <option value="CRITICAL">CRITICAL</option>
           </select>
         </Box>
+
+        <Box>
+          <Text mb="1">Type</Text>
+          <select
+           value={type}
+           onChange={(e) => setType(e.target.value as IncidentType)}
+           style={{width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ccc", }}
+          >
+           <option value="FIRE">FIRE</option>
+           <option value="ACCIDENT">ACCIDENT</option>
+           <option value="PROTEST">PROTEST</option>
+           <option value="POLLUTION">POLLUTION</option>
+           <option value="POLICE_ACTIVITY">POLICE_ACTIVITY</option>
+           <option value="OTHER">OTHER</option>
+         </select>
+       </Box>
 
         <Button
           type="submit"

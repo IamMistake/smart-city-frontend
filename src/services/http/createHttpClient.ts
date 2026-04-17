@@ -33,7 +33,16 @@ export function createHttpClient(baseURL: string): AxiosInstance {
 		},
 	});
 
-	client.interceptors.request.use(async (config) => attachBearerToken(config));
+/* 	client.interceptors.request.use(async (config) => attachBearerToken(config)); */
+client.interceptors.request.use((config) => {
+  const token = getAccessToken(); // sync
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
 	client.interceptors.response.use(
 		(response) => response,
 		(error) => Promise.reject(normalizeApiError(error)),

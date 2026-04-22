@@ -1,12 +1,13 @@
-import axios, {
+/* import axios, {
 	AxiosHeaders,
 	type AxiosInstance,
 	type InternalAxiosRequestConfig,
-} from "axios";
+} from "axios"; */
+import axios, { type AxiosInstance } from "axios";
 import { normalizeApiError } from "@/types/api";
 import { getAccessToken } from "@/services/http/authToken";
 
-async function attachBearerToken(config: InternalAxiosRequestConfig) {
+/* async function attachBearerToken(config: InternalAxiosRequestConfig) {
 	const token = await getAccessToken();
 
 	if (!token) {
@@ -22,7 +23,7 @@ async function attachBearerToken(config: InternalAxiosRequestConfig) {
 	config.headers = headers;
 
 	return config;
-}
+} */
 
 export function createHttpClient(baseURL: string): AxiosInstance {
 	const client = axios.create({
@@ -33,7 +34,16 @@ export function createHttpClient(baseURL: string): AxiosInstance {
 		},
 	});
 
-	client.interceptors.request.use(async (config) => attachBearerToken(config));
+/* 	client.interceptors.request.use(async (config) => attachBearerToken(config)); */
+client.interceptors.request.use((config) => {
+  const token = getAccessToken(); // sync
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
 	client.interceptors.response.use(
 		(response) => response,
 		(error) => Promise.reject(normalizeApiError(error)),

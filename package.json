@@ -14,9 +14,11 @@
     "check": "npm run lint && npm run typecheck"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^3.34.0",
     "@clerk/react": "^6.2.1",
     "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@fontsource-variable/manrope": "^5.2.8",
     "axios": "^1.15.0",
     "leaflet": "^1.9.4",

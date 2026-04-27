@@ -13,6 +13,7 @@ const config = defineConfig({
 						'"Manrope Variable", "Manrope", "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif',
 				},
 			},
+
 			colors: {
 				accent: {
 					50: { value: "#e8f4ee" },
@@ -29,6 +30,7 @@ const config = defineConfig({
 				},
 			},
 		},
+
 		semanticTokens: {
 			colors: {
 				bg: {
@@ -37,13 +39,16 @@ const config = defineConfig({
 					muted: { value: { _light: "#efefef", _dark: "#1a1a1a" } },
 					panel: { value: { _light: "#ffffff", _dark: "#111111" } },
 				},
+
 				fg: {
 					DEFAULT: { value: { _light: "#111111", _dark: "#f5f5f5" } },
 					muted: { value: { _light: "#555555", _dark: "#bdbdbd" } },
 				},
+
 				border: {
 					DEFAULT: { value: { _light: "#e5e5e5", _dark: "#2b2b2b" } },
 				},
+
 				accent: {
 					solid: { value: "{colors.accent.700}" },
 					contrast: { value: "#ffffff" },
@@ -52,6 +57,63 @@ const config = defineConfig({
 					subtle: { value: "{colors.accent.200}" },
 					emphasized: { value: "{colors.accent.300}" },
 					focusRing: { value: "{colors.accent.500}" },
+				},
+
+			
+				incident: {
+					status: {
+						active: {
+							value: {
+								_light: "#22c55e", 
+								_dark: "#4ade80",
+							},
+						},
+						reported: {
+							value: {
+								_light: "#f59e0b", 
+								_dark: "#fbbf24",
+							},
+						},
+						rejected: {
+							value: {
+								_light: "#ef4444", 
+								_dark: "#ff6b6b",
+							},
+						},
+						resolved: {
+							value: {
+								_light: "#16a34a", 
+								_dark: "#4ade80",
+							},
+						},
+					},
+
+					priority: {
+						critical: {
+							value: {
+								_light: "#ef4444", 
+								_dark: "#ff6b6b",
+							},
+						},
+						high: {
+							value: {
+								_light: "#f97316", 
+								_dark: "#fb923c",
+							},
+						},
+						medium: {
+							value: {
+								_light: "#eab308", 
+								_dark: "#facc15",
+							},
+						},
+						low: {
+							value: {
+								_light: "#22c55e", 
+								_dark: "#4ade80",
+							},
+						},
+					},
 				},
 			},
 		},

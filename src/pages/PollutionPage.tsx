@@ -2,6 +2,7 @@ import { useState } from "react";
 import { VStack, Heading, Text, Box, Button } from "@chakra-ui/react";
 import { PollutionMap } from "@/components/sections/pollution/PollutionMap";
 import { PollutionWidget } from "@/components/sections/pollution/PollutionWidget";
+import { PollutionHistoryChart } from "@/components/sections/pollution/PollutionHistoryChart";
 import type { PollutionData, PollutionMetric } from "@/models/pollution";
 import { getLegendForMetric } from "@/utils/mapUtils";
 import { METRICS, CITY } from "@/constants/metrics";
@@ -48,6 +49,7 @@ export function PollutionPage() {
         })}
       </Box>
 
+      {/* Map */}
       <PollutionMap
         stations={pollutionData?.stations}
         legend={pollutionData?.legend}
@@ -55,10 +57,17 @@ export function PollutionPage() {
         metric={selectedMetric}
       />
 
+      {/* Current data */}
       <PollutionWidget
         city={CITY}
         metric={selectedMetric}
         onDataLoaded={handleDataLoaded}
+      />
+
+      {/* History chart */}
+      <PollutionHistoryChart
+        metric={selectedMetric}
+        unit={pollutionData?.unit ?? ""}
       />
     </VStack>
   );

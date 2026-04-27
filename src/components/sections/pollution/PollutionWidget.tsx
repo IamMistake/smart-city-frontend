@@ -7,6 +7,7 @@ import type { PollutionData, PollutionMetric } from "@/models/pollution";
 import { fetchPollutionData } from "@/services/api/pollutionService";
 import { LegendBar } from "@/components/sections/pollution/LegendBar";
 import { getLegendForMetric, isInMacedonia, formatSensorName, reducer } from "@/utils/mapUtils"; 
+import { getStatusText } from "@/utils/mapUtils";
 
 interface PollutionWidgetProps {
   city: string;
@@ -170,7 +171,9 @@ useEffect(() => {
               </Text>
             </Box>
             <VStack align="start" gap="0">
-              <Text fontWeight="semibold">{data.summary.statusText}</Text>
+             <Text fontWeight="semibold">
+  {getStatusText(data.metric, data.summary.cityValue)}
+</Text>
               <Text fontSize="sm" color="fg.muted">
                 City average: {hasCityValue ? `${data.summary.cityValue} ${data.unit}` : "—"}
               </Text>

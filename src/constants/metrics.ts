@@ -98,3 +98,32 @@ export const DARK_TILE =
 
 export const LIGHT_TILE =
   "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png";
+
+export const STATUS_TEXT_PREFIX: Record<PollutionMetric, string> = {
+  pm10:        "Air quality is",
+  pm25:        "Air quality is",
+  pm1:         "Air quality is",
+  no2:         "NO₂ level is",
+  o3:          "Ozone level is",
+  temperature: "Temperature is",
+  humidity:    "Humidity is",
+  pressure:    "Pressure is",
+  noise_dba:   "Noise level is",
+};
+
+export const HISTORY_WINDOWS = [
+  { label: "6h",  hours: 6,   bucket: 15  },
+  { label: "24h", hours: 24,  bucket: 60  },
+  { label: "48h", hours: 48,  bucket: 60  },
+  { label: "7d",  hours: 168, bucket: 240 },
+] as const;
+ 
+export const CHART_DIMENSIONS = {
+  W:   600,
+  H:   200,
+  PAD: { top: 16, right: 16, bottom: 32, left: 44 },
+} as const;
+
+export const { W, H, PAD } = CHART_DIMENSIONS;
+export const innerW = W - PAD.left - PAD.right;
+export const innerH = H - PAD.top  - PAD.bottom;

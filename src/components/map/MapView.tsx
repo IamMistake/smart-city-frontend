@@ -1,7 +1,7 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MAP_CONFIG } from "@/utils/mapConfig.ts";
-import { Box, AspectRatio, HStack, Text, Switch } from "@chakra-ui/react";
+import { Box, AspectRatio, HStack, Switch } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -40,7 +40,7 @@ export function MapView() {
         });
 
         return () => map.remove();
-    }, []);
+    }, [showEvents, showPollution]);
 
     // handle toggles safely
     useEffect(() => {

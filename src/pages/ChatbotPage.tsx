@@ -45,7 +45,7 @@ export function ChatbotPage() {
 	};
 
 	return (
-		<VStack h="100vh" spacing={0} bgGradient="linear(to-br, blue.50, purple.100)">
+		<VStack h="100vh" gap={0} bgGradient="linear(to-br, blue.50, purple.100)">
 
 			{/* Header */}
 			<Box w="100%" p="4" bg="white" boxShadow="sm">
@@ -63,7 +63,7 @@ export function ChatbotPage() {
 				mx="auto"
 				p="4"
 				overflowY="auto"
-				spacing="4"
+				gap="4"
 			>
 				{messages.map((m, i) => (
 					<Box

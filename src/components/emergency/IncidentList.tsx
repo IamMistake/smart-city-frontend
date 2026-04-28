@@ -4,6 +4,7 @@ import {
   STATUS_COLOR_MAP,
   PRIORITY_COLOR_MAP,
 } from "../../constants/incidentColors";
+import { getDirectionsLink } from "@/utils/getDirectionsLink";
 
 type Props = {
   incidents: Incident[];
@@ -41,6 +42,21 @@ export default function IncidentList({ incidents }: Props) {
               {incident.description}
             </Text>
           )}
+<button
+  style={{ cursor: "pointer" }}
+  onClick={(e) => {
+    e.stopPropagation();
+    window.open(
+      getDirectionsLink(
+        Number(incident.latitude),
+        Number(incident.longitude)
+      ),
+      "_blank"
+    );
+  }}
+>
+  🧭 Directions
+</button>
         </Box>
       ))}
     </VStack>

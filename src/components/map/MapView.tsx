@@ -4,13 +4,12 @@ import { MAP_CONFIG } from "@/utils/mapConfig.ts";
 import { Box, AspectRatio, HStack, Switch } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
-
-
 import { addEventLayer, removeEventLayer } from "./layers/eventLayer";
 import { addPollutionLayer, removePollutionLayer } from "./layers/pollutionLayer";
 
 import { mockEvents } from "./mockData/mockEvents.ts";
 import { mockPollution } from "./mockData/mockPollution.ts";
+import { getDirectionsLink } from "@/utils/getDirectionsLink";
 
 export function MapView() {
     const mapContainer = useRef<HTMLDivElement | null>(null);
@@ -37,6 +36,42 @@ export function MapView() {
         map.on("load", () => {
             if (showEvents) addEventLayer(map, mockEvents);
             if (showPollution) addPollutionLayer(map, mockPollution);
+
+            // 👉 TEST MARKER (за твојот таск)
+    const marker = new maplibregl.Marker()
+        .setLngLat([21.4314, 41.9964]) // Скопје
+        .addTo(map);
+
+    marker.getElement().style.cursor = "pointer";
+
+    marker.getElement().addEventListener("click", () => {
+        window.open(
+            getDirectionsLink(41.9964, 21.4314),
+            "_blank"
+        );
+    });
+            // optional UX: cursor pointer on hover (events layer)
+    map.on("mouseenter", "event-layer", () => {
+        map.getCanvas().style.cursor = "pointer";
+    });
+
+    map.on("mouseleave", "event-layer", () => {
+        map.getCanvas().style.cursor = "";
+    });
+
+    // CLICK → Google Maps directions
+    map.on("click", "event-layer", (e) => {
+        const feature = e.features?.[0];
+        if (!feature) return;
+
+        const lat = Number(feature.properties.latitude);
+        const lng = Number(feature.properties.longitude);
+
+        // safety check (avoid NaN)
+        if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+
+        window.open(getDirectionsLink(lat, lng), "_blank");
+    });
         });
 
         return () => map.remove();

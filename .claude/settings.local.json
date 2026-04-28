@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(bunx tsc *)",
+      "Bash(bun run *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)"
+    ]
+  }
+}

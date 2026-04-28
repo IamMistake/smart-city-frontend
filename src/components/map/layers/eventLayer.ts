@@ -1,58 +1,105 @@
 import maplibregl from "maplibre-gl";
-import type {FeatureCollection} from "geojson";
+import type { FeatureCollection } from "geojson";
+import type { EventFeatureProperties } from "../types";
 
-export function addEventLayer(map: maplibregl.Map, data?: FeatureCollection) {
+export const EVENT_TYPE_COLORS: Record<string, string> = {
+    FIRE: "#ef4444",
+    ACCIDENT: "#f97316",
+    PROTEST: "#8b5cf6",
+    POLLUTION: "#6b7280",
+    POLICE_ACTIVITY: "#3b82f6",
+    OTHER: "#94a3b8",
+};
 
-    if (map.getSource("events")) {
-        return;
-    }
+export const EVENT_TYPE_LABELS: Record<string, string> = {
+    FIRE: "Fire",
+    ACCIDENT: "Accident",
+    PROTEST: "Protest",
+    POLLUTION: "Pollution",
+    POLICE_ACTIVITY: "Police Activity",
+    OTHER: "Other",
+};
 
-    const eventData: FeatureCollection =
-        data ?? {
-            type: "FeatureCollection",
-            features: [],
-    };
+type OnEventClick = (props: EventFeatureProperties, lngLat: [number, number]) => void;
 
-    map.addSource("events", {
-        type: "geojson",
-        data: eventData,
-    });
+export function addEventLayer(
+    map: maplibregl.Map,
+    data: FeatureCollection,
+    onClick?: OnEventClick,
+) {
+    if (map.getSource("events")) return;
+
+    map.addSource("events", { type: "geojson", data });
 
     map.addLayer({
         id: "events-layer",
         type: "circle",
         source: "events",
         paint: {
-            "circle-radius": 18,
+            "circle-radius": 14,
             "circle-color": [
                 "match",
                 ["get", "type"],
-                "Fire", "#ff3b30",
-                "Accident", "#ff9500",
-                "#4a90e2",
+                "FIRE", EVENT_TYPE_COLORS.FIRE,
+                "ACCIDENT", EVENT_TYPE_COLORS.ACCIDENT,
+                "PROTEST", EVENT_TYPE_COLORS.PROTEST,
+                "POLLUTION", EVENT_TYPE_COLORS.POLLUTION,
+                "POLICE_ACTIVITY", EVENT_TYPE_COLORS.POLICE_ACTIVITY,
+                EVENT_TYPE_COLORS.OTHER,
             ],
-            "circle-opacity": 1,
-            "circle-stroke-width": 3,
-            "circle-stroke-color": "#000000",
+            "circle-opacity": 0.92,
+            "circle-stroke-width": [
+                "match",
+                ["get", "priority"],
+                "CRITICAL", 4,
+                "HIGH", 3,
+                "MEDIUM", 2,
+                1,
+            ],
+            "circle-stroke-color": "#1a1a2e",
         },
     });
 
+    // Short letter label on each marker to indicate type at a glance
+    map.addLayer({
+        id: "events-text",
+        type: "symbol",
+        source: "events",
+        layout: {
+            "text-field": [
+                "match",
+                ["get", "type"],
+                "FIRE", "F",
+                "ACCIDENT", "A",
+                "PROTEST", "P",
+                "POLLUTION", "PL",
+                "POLICE_ACTIVITY", "PO",
+                "?",
+            ],
+            "text-size": 10,
+            "text-font": ["Noto Sans Bold", "Open Sans Bold", "Arial Unicode MS Bold"],
+            "text-allow-overlap": true,
+            "text-ignore-placement": true,
+        },
+        paint: {
+            "text-color": "#ffffff",
+        },
+    });
+
+    if (!onClick) return;
+
     map.on("click", "events-layer", (e) => {
         const feature = e.features?.[0];
-        if (!feature || feature.geometry.type !== "Point")
-        {
-            return;
-        }
+        if (!feature || feature.geometry.type !== "Point") return;
 
-        const [lng, lat] = feature.geometry.coordinates;
-        const type = feature.properties?.type ?? "Unknown";
+        const [lng, lat] = feature.geometry.coordinates as [number, number];
+        onClick(feature.properties as EventFeatureProperties, [lng, lat]);
+    });
 
-        new maplibregl.Popup()
-            .setLngLat([lng, lat])
-            .setHTML(` 
-                    <strong>Event Type:</strong> ${type}
-                    <br/>
-                    <strong>Coordinates:</strong> ${lng.toFixed(3)}, ${lat.toFixed(3)}
-            `).addTo(map);
+    map.on("mouseenter", "events-layer", () => {
+        map.getCanvas().style.cursor = "pointer";
+    });
+    map.on("mouseleave", "events-layer", () => {
+        map.getCanvas().style.cursor = "";
     });
 }

@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
             {path: ROUTES.map, element: <MapPage/>},
             {
                 path: ROUTES.emergencies,
-                element: (
+                 element: (
                     <RequireRoleRoute allowedRoles={ALL_ROLES}>
                         <EmergenciesPage/>
                     </RequireRoleRoute>

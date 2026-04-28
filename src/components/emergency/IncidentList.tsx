@@ -24,6 +24,17 @@ export default function IncidentList({ incidents }: Props) {
           borderRadius="lg"
           p="4"
           shadow="sm"
+          cursor="pointer"
+  _hover={{ bg: "gray.100" }}
+  onClick={() => {
+    // fallback coordinates used for demo when backend data is missing
+    const lat = Number(incident.latitude) || 41.9964;
+    const lng = Number(incident.longitude) || 21.4314;
+    window.open(
+    getDirectionsLink(lat, lng),
+    "_blank"
+  );
+}}
         >
           <Heading size="md">{incident.title}</Heading>
 

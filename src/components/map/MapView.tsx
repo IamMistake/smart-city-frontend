@@ -37,9 +37,9 @@ export function MapView() {
             if (showEvents) addEventLayer(map, mockEvents);
             if (showPollution) addPollutionLayer(map, mockPollution);
 
-            // 👉 TEST MARKER (за твојот таск)
+            // TEST MARKER 
     const marker = new maplibregl.Marker()
-        .setLngLat([21.4314, 41.9964]) // Скопје
+        .setLngLat([21.4314, 41.9964]) 
         .addTo(map);
 
     marker.getElement().style.cursor = "pointer";

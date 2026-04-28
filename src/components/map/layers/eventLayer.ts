@@ -1,58 +1,52 @@
 import maplibregl from "maplibre-gl";
-import type {FeatureCollection} from "geojson";
+import type { FeatureCollection } from "geojson";
 
 export function addEventLayer(map: maplibregl.Map, data?: FeatureCollection) {
+    if (map.getSource("events")) return;
 
-    if (map.getSource("events")) {
-        return;
-    }
-
-    const eventData: FeatureCollection =
-        data ?? {
-            type: "FeatureCollection",
-            features: [],
-    };
+    const eventData: FeatureCollection = data ?? { type: "FeatureCollection", features: [] };
 
     map.addSource("events", {
         type: "geojson",
         data: eventData,
     });
 
-    map.addLayer({
-        id: "events-layer",
-        type: "circle",
-        source: "events",
-        paint: {
-            "circle-radius": 18,
-            "circle-color": [
-                "match",
-                ["get", "type"],
-                "Fire", "#ff3b30",
-                "Accident", "#ff9500",
-                "#4a90e2",
-            ],
-            "circle-opacity": 1,
-            "circle-stroke-width": 3,
-            "circle-stroke-color": "#000000",
-        },
-    });
-
-    map.on("click", "events-layer", (e) => {
-        const feature = e.features?.[0];
-        if (!feature || feature.geometry.type !== "Point")
-        {
-            return;
+    map.loadImage("https://cdn-icons-png.flaticon.com/32/684/684908.png")
+    .then((image) => {
+        if (!map.hasImage("event-pin")) {
+            map.addImage("event-pin", image.data);
         }
 
-        const [lng, lat] = feature.geometry.coordinates;
-        const type = feature.properties?.type ?? "Unknown";
-
-        new maplibregl.Popup()
-            .setLngLat([lng, lat])
-            .setHTML(` 
-                    <strong>Event Type:</strong> ${type}
-                    <br/>
-                    <strong>Coordinates:</strong> ${lng.toFixed(3)}, ${lat.toFixed(3)}
-            `).addTo(map);
+        map.addLayer({
+            id: "events-layer",
+            type: "symbol",
+            source: "events",
+            layout: {
+                "icon-image": "event-pin",
+                "icon-size": 0.8,
+                "icon-allow-overlap": true,
+                "icon-anchor": "bottom",
+            },
+        });
+    })
+    .catch(() => {
+        // fallback ако сликата не се вчита
+        map.addLayer({
+            id: "events-layer",
+            type: "circle",
+            source: "events",
+            paint: {
+                "circle-radius": 10,
+                "circle-color": "#e53e3e",
+                "circle-stroke-width": 2,
+                "circle-stroke-color": "#fff",
+            },
+        });
     });
+}
+
+export function removeEventLayer(map: maplibregl.Map) {
+    if (map.getLayer("events-layer")) map.removeLayer("events-layer");
+    if (map.getSource("events")) map.removeSource("events");
+    if (map.hasImage("event-pin")) map.removeImage("event-pin");
 }

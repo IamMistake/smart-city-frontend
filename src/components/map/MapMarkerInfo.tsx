@@ -13,11 +13,10 @@ export function MapMarkerInfo({ marker, onClose }: Props) {
     return (
         <Box
             bg="white"
-            _dark={{ bg: "gray.900" }}
             borderRadius="xl"
             border="1px solid"
             borderColor="gray.200"
-            _dark={{ borderColor: "gray.700" }}
+            _dark={{ bg: "gray.900", borderColor: "gray.700" }}
             shadow="lg"
             p={4}
         >

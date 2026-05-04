@@ -10,7 +10,7 @@ import "@fontsource-variable/manrope/wght.css";
 import "./index.css";
 import App from "./App";
 import { AppProviders } from "@/app/providers/AppProviders";
-import 'leaflet/dist/leaflet.css';
+import "leaflet/dist/leaflet.css";
 
 type ViteClerkProviderProps = PropsWithChildren<{
 	afterSignOutUrl?: string;

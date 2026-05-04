@@ -49,9 +49,8 @@ function resolveErrorMessage(error: unknown) {
 
 export async function checkSpringAuthenticatedUser() {
 	try {
-		const { data } = await springClient.get<AuthenticatedUserResponse>(
-			AUTH_ME_ENDPOINT,
-		);
+		const { data } =
+			await springClient.get<AuthenticatedUserResponse>(AUTH_ME_ENDPOINT);
 		return normalizeAuthenticatedUser(data);
 	} catch (error) {
 		throw new Error(resolveErrorMessage(error));
@@ -60,9 +59,10 @@ export async function checkSpringAuthenticatedUser() {
 
 export async function checkFastapiAuthenticatedUser() {
 	try {
-		const { data } = await fastapiClient.get<FastapiAuthenticatedUserResponse>(
-			AUTH_ME_ENDPOINT,
-		);
+		const { data } =
+			await fastapiClient.get<FastapiAuthenticatedUserResponse>(
+				AUTH_ME_ENDPOINT,
+			);
 		return normalizeAuthenticatedUser(data);
 	} catch (error) {
 		throw new Error(resolveErrorMessage(error));

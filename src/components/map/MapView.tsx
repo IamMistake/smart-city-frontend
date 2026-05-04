@@ -21,9 +21,7 @@ export function MapView() {
 	const mapRef = useRef<maplibregl.Map | null>(null);
 	const [mapLoaded, setMapLoaded] = useState(false);
 	const [filters, setFilters] = useState<MapFilters>(DEFAULT_FILTERS);
-	const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(
-		null,
-	);
+	const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(null);
 
 	useEffect(() => {
 		if (!mapContainer.current) {
@@ -98,10 +96,7 @@ export function MapView() {
 				eventFilter = ["in", ["get", "type"], ["literal", activeTypes]];
 			}
 
-			map.setFilter(
-				"events-layer",
-				eventFilter as maplibregl.FilterSpecification | null,
-			);
+			map.setFilter("events-layer", eventFilter as maplibregl.FilterSpecification | null);
 			if (map.getLayer("events-text")) {
 				map.setFilter(
 					"events-text",
@@ -146,14 +141,7 @@ export function MapView() {
 			</Box>
 
 			{selectedMarker && (
-				<Box
-					position="absolute"
-					bottom={8}
-					right={3}
-					zIndex={10}
-					maxW="320px"
-					w="full"
-				>
+				<Box position="absolute" bottom={8} right={3} zIndex={10} maxW="320px" w="full">
 					<MapMarkerInfo
 						marker={selectedMarker}
 						onClose={() => setSelectedMarker(null)}

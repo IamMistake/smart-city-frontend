@@ -1,6 +1,6 @@
 export type IncidentPriority = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 
-export type IncidentStatus = "ACTIVE" | "RESOLVED";
+export type IncidentStatus = "ACTIVE" | "REPORTED" | "REJECTED" | "RESOLVED";
 
 export type IncidentType =
 	| "FIRE"
@@ -8,7 +8,19 @@ export type IncidentType =
 	| "PROTEST"
 	| "POLLUTION"
 	| "POLICE_ACTIVITY"
-	| "OTHER";
+	| "OTHER"
+	| "NOISE_POLLUTION";
+
+export interface CreateIncidentRequest {
+	title: string;
+	description?: string;
+	priority: IncidentPriority;
+	type: IncidentType;
+	latitude: number;
+	longitude: number;
+	address?: string;
+	occurredAt?: string;
+}
 
 export interface Incident {
 	id: number;
@@ -16,6 +28,10 @@ export interface Incident {
 	description?: string | null;
 	priority: IncidentPriority;
 	type: IncidentType;
+	latitude: number;
+	longitude: number;
+	address?: string | null;
+	occurredAt?: string | null;
 	status: IncidentStatus;
 	latitude?: number;
 	longitude?: number;

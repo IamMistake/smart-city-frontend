@@ -8,16 +8,18 @@ import { getIncidents } from "../services/api/emergencyService";
 export function EmergenciesPage() {
 	const [incidents, setIncidents] = useState<Incident[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const loadIncidents = async () => {
 		try {
 			setLoading(true);
 			const data = await getIncidents();
 			setIncidents(data);
-			setError(false);
-		} catch {
-			setError(true);
+			setError(null);
+		} catch (error) {
+			setError(
+				error instanceof Error ? error.message : "Error loading incidents.",
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -36,7 +38,7 @@ export function EmergenciesPage() {
 
 			{loading && <Text>Loading incidents...</Text>}
 
-			{error && <Text color="red.500">Error loading incidents.</Text>}
+			{error && <Text color="red.500">{error}</Text>}
 
 			{!loading && !error && <IncidentList incidents={incidents} />}
 		</VStack>

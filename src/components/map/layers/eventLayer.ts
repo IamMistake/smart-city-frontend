@@ -94,11 +94,7 @@ export function addEventLayer(
 				"?",
 			],
 			"text-size": 10,
-			"text-font": [
-				"Noto Sans Bold",
-				"Open Sans Bold",
-				"Arial Unicode MS Bold",
-			],
+			"text-font": ["Noto Sans Bold", "Open Sans Bold", "Arial Unicode MS Bold"],
 			"text-allow-overlap": true,
 			"text-ignore-placement": true,
 		},
@@ -117,14 +113,8 @@ export function addEventLayer(
 			return;
 		}
 
-		const [longitude, latitude] = feature.geometry.coordinates as [
-			number,
-			number,
-		];
-		onClick(feature.properties as EventFeatureProperties, [
-			longitude,
-			latitude,
-		]);
+		const [longitude, latitude] = feature.geometry.coordinates as [number, number];
+		onClick(feature.properties as EventFeatureProperties, [longitude, latitude]);
 	});
 
 	map.on("mouseenter", "events-layer", () => {

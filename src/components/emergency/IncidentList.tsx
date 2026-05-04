@@ -31,6 +31,15 @@ export default function IncidentList({ incidents }: Props) {
 		);
 	};
 
+	const formatDate = (value?: string | null) => {
+		if (!value) {
+			return null;
+		}
+
+		const date = new Date(value);
+		return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+	};
+
 	return (
 		<VStack align="stretch" gap="4">
 			{incidents.map((incident) => {
@@ -54,7 +63,7 @@ export default function IncidentList({ incidents }: Props) {
 					>
 						<Heading size="md">{incident.title}</Heading>
 
-						<HStack mt="2" gap="3">
+						<HStack mt="2" gap="3" flexWrap="wrap">
 							<Badge bg={STATUS_COLOR_MAP[incident.status]} color="white">
 								{incident.status}
 							</Badge>
@@ -62,6 +71,8 @@ export default function IncidentList({ incidents }: Props) {
 							<Badge bg={PRIORITY_COLOR_MAP[incident.priority]} color="white">
 								{incident.priority}
 							</Badge>
+
+							<Badge variant="subtle">{incident.type}</Badge>
 						</HStack>
 
 						{incident.description && (
@@ -83,6 +94,38 @@ export default function IncidentList({ incidents }: Props) {
 								Directions
 							</Button>
 						)}
+
+						<VStack align="stretch" gap="1" mt="3">
+							<Text fontSize="sm" color="fg.muted">
+								Coordinates: {incident.latitude}, {incident.longitude}
+							</Text>
+
+							{incident.address && (
+								<Text fontSize="sm" color="fg.muted">
+									Address: {incident.address}
+								</Text>
+							)}
+
+							{formatDate(incident.occurredAt) && (
+								<Text fontSize="sm" color="fg.muted">
+									Occurred: {formatDate(incident.occurredAt)}
+								</Text>
+							)}
+
+							<Text fontSize="sm" color="fg.muted">
+								Created: {formatDate(incident.createdAt) ?? incident.createdAt}
+							</Text>
+
+							<Text fontSize="sm" color="fg.muted">
+								Updated: {formatDate(incident.updatedAt) ?? incident.updatedAt}
+							</Text>
+
+							{formatDate(incident.resolvedAt) && (
+								<Text fontSize="sm" color="fg.muted">
+									Resolved: {formatDate(incident.resolvedAt)}
+								</Text>
+							)}
+						</VStack>
 					</Box>
 				);
 			})}

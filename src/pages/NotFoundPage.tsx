@@ -30,10 +30,7 @@ export function NotFoundPage() {
 			borderWidth="1px"
 			borderColor="border"
 		>
-			<VStack
-				gap={6}
-				animation={`${revealAnimation} 600ms ease-out forwards`}
-			>
+			<VStack gap={6} animation={`${revealAnimation} 600ms ease-out forwards`}>
 				{/* Big 404 with bounce on hover */}
 				<Heading
 					size="4xl"

@@ -5,47 +5,92 @@ export const mockPollution: FeatureCollection = {
 	features: [
 		{
 			type: "Feature",
-			properties: { level: 1, value: 25 },
+			properties: {
+				level: 1,
+				stationName: "Rasinoec Station",
+				value: 18,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.36, 42.01] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 2, value: 58 },
+			properties: {
+				level: 2,
+				stationName: "Karpoš Station",
+				value: 42,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.38, 41.99] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 3, value: 95 },
+			properties: {
+				level: 3,
+				stationName: "Centar Station",
+				value: 87,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.43, 41.99] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 2, value: 62 },
+			properties: {
+				level: 2,
+				stationName: "Čair Station",
+				value: 35,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.46, 41.98] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 3, value: 110 },
+			properties: {
+				level: 3,
+				stationName: "Aerodrom Station",
+				value: 110,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.5, 41.99] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 3, value: 145 },
+			properties: {
+				level: 3,
+				stationName: "Kisela Voda Station",
+				value: 95,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.52, 42.0] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 2, value: 70 },
+			properties: {
+				level: 2,
+				stationName: "Butel Station",
+				value: 48,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.37, 41.96] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 1, value: 20 },
+			properties: {
+				level: 1,
+				stationName: "Gazi Baba Station",
+				value: 12,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.4, 41.95] },
 		},
 		{
 			type: "Feature",
-			properties: { level: 1, value: 30 },
+			properties: {
+				level: 1,
+				stationName: "Saraj Station",
+				value: 9,
+				metric: "PM10",
+			},
 			geometry: { type: "Point", coordinates: [21.53, 41.97] },
 		},
 	],

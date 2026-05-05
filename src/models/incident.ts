@@ -33,9 +33,6 @@ export interface Incident {
 	address?: string | null;
 	occurredAt?: string | null;
 	status: IncidentStatus;
-	latitude?: number;
-	longitude?: number;
-	address?: string;
 	createdAt: string;
 	updatedAt: string;
 	resolvedAt?: string | null;

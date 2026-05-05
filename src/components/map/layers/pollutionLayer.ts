@@ -82,8 +82,14 @@ export function addPollutionLayer(
 			return;
 		}
 
-		const [longitude, latitude] = feature.geometry.coordinates as [number, number];
-		onClick(feature.properties as PollutionFeatureProperties, [longitude, latitude]);
+		const [longitude, latitude] = feature.geometry.coordinates as [
+			number,
+			number,
+		];
+		onClick(feature.properties as PollutionFeatureProperties, [
+			longitude,
+			latitude,
+		]);
 	});
 
 	map.on("mouseenter", "pollution-layer", () => {

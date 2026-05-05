@@ -16,12 +16,32 @@ import {
 } from "./types";
 import type { MapFilters, SelectedMarker } from "./types";
 
-export function MapView() {
+type Coordinates = {
+	latitude: number;
+	longitude: number;
+};
+
+type MapViewProps = {
+	onPickCoordinates?: (coordinates: Coordinates) => void;
+	selectedCoordinates?: Coordinates | null;
+	showMockLayers?: boolean;
+	showLayerToggles?: boolean;
+};
+
+export function MapView({
+	onPickCoordinates,
+	selectedCoordinates,
+	showMockLayers = true,
+	showLayerToggles = true,
+}: MapViewProps) {
 	const mapContainer = useRef<HTMLDivElement | null>(null);
 	const mapRef = useRef<maplibregl.Map | null>(null);
+	const markerRef = useRef<maplibregl.Marker | null>(null);
 	const [mapLoaded, setMapLoaded] = useState(false);
 	const [filters, setFilters] = useState<MapFilters>(DEFAULT_FILTERS);
-	const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(null);
+	const [selectedMarker, setSelectedMarker] = useState<SelectedMarker | null>(
+		null,
+	);
 
 	useEffect(() => {
 		if (!mapContainer.current) {
@@ -36,30 +56,46 @@ export function MapView() {
 		});
 
 		mapRef.current = map;
+		if (onPickCoordinates) {
+			map.getCanvas().style.cursor = "crosshair";
+		}
 		map.addControl(new maplibregl.NavigationControl(), "top-left");
 		map.addControl(new maplibregl.ScaleControl(), "bottom-left");
 
 		map.on("load", () => {
-			addEventLayer(map, mockEvents, (properties, lngLat) => {
-				setSelectedMarker({ kind: "event", lngLat, ...properties });
-			});
+			if (showMockLayers) {
+				addEventLayer(map, mockEvents, (properties, lngLat) => {
+					setSelectedMarker({ kind: "event", lngLat, ...properties });
+				});
 
-			addPollutionLayer(map, mockPollution, (properties, lngLat) => {
-				setSelectedMarker({ kind: "pollution", lngLat, ...properties });
-			});
+				addPollutionLayer(map, mockPollution, (properties, lngLat) => {
+					setSelectedMarker({ kind: "pollution", lngLat, ...properties });
+				});
+			}
 
 			setMapLoaded(true);
 		});
 
+		if (onPickCoordinates) {
+			map.on("click", (event) => {
+				onPickCoordinates({
+					latitude: event.lngLat.lat,
+					longitude: event.lngLat.lng,
+				});
+			});
+		}
+
 		return () => {
+			markerRef.current?.remove();
+			markerRef.current = null;
 			map.remove();
 			mapRef.current = null;
 			setMapLoaded(false);
 		};
-	}, []);
+	}, [onPickCoordinates, showMockLayers]);
 
 	useEffect(() => {
-		if (!mapLoaded) {
+		if (!mapLoaded || !showMockLayers) {
 			return;
 		}
 
@@ -96,7 +132,10 @@ export function MapView() {
 				eventFilter = ["in", ["get", "type"], ["literal", activeTypes]];
 			}
 
-			map.setFilter("events-layer", eventFilter as maplibregl.FilterSpecification | null);
+			map.setFilter(
+				"events-layer",
+				eventFilter as maplibregl.FilterSpecification | null,
+			);
 			if (map.getLayer("events-text")) {
 				map.setFilter(
 					"events-text",
@@ -128,7 +167,31 @@ export function MapView() {
 				);
 			}
 		}
-	}, [filters, mapLoaded]);
+	}, [filters, mapLoaded, showMockLayers]);
+
+	useEffect(() => {
+		const map = mapRef.current;
+		if (!map) {
+			return;
+		}
+
+		if (!selectedCoordinates) {
+			markerRef.current?.remove();
+			markerRef.current = null;
+			return;
+		}
+
+		const lngLat: [number, number] = [
+			selectedCoordinates.longitude,
+			selectedCoordinates.latitude,
+		];
+
+		if (!markerRef.current) {
+			markerRef.current = new maplibregl.Marker().setLngLat(lngLat).addTo(map);
+		} else {
+			markerRef.current.setLngLat(lngLat);
+		}
+	}, [selectedCoordinates]);
 
 	return (
 		<Box position="relative">
@@ -136,12 +199,21 @@ export function MapView() {
 				<Box ref={mapContainer} borderRadius="xl" overflow="hidden" />
 			</AspectRatio>
 
-			<Box position="absolute" top={3} right={3} zIndex={10}>
-				<MapFilterPanel filters={filters} onFiltersChange={setFilters} />
-			</Box>
+			{showLayerToggles && showMockLayers && (
+				<Box position="absolute" top={3} right={3} zIndex={10}>
+					<MapFilterPanel filters={filters} onFiltersChange={setFilters} />
+				</Box>
+			)}
 
-			{selectedMarker && (
-				<Box position="absolute" bottom={8} right={3} zIndex={10} maxW="320px" w="full">
+			{showMockLayers && selectedMarker && (
+				<Box
+					position="absolute"
+					bottom={8}
+					right={3}
+					zIndex={10}
+					maxW="320px"
+					w="full"
+				>
 					<MapMarkerInfo
 						marker={selectedMarker}
 						onClose={() => setSelectedMarker(null)}

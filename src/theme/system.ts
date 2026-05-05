@@ -59,30 +59,29 @@ const config = defineConfig({
 					focusRing: { value: "{colors.accent.500}" },
 				},
 
-			
 				incident: {
 					status: {
 						active: {
 							value: {
-								_light: "#22c55e", 
+								_light: "#22c55e",
 								_dark: "#4ade80",
 							},
 						},
 						reported: {
 							value: {
-								_light: "#f59e0b", 
+								_light: "#f59e0b",
 								_dark: "#fbbf24",
 							},
 						},
 						rejected: {
 							value: {
-								_light: "#ef4444", 
+								_light: "#ef4444",
 								_dark: "#ff6b6b",
 							},
 						},
 						resolved: {
 							value: {
-								_light: "#16a34a", 
+								_light: "#16a34a",
 								_dark: "#4ade80",
 							},
 						},
@@ -91,25 +90,25 @@ const config = defineConfig({
 					priority: {
 						critical: {
 							value: {
-								_light: "#ef4444", 
+								_light: "#ef4444",
 								_dark: "#ff6b6b",
 							},
 						},
 						high: {
 							value: {
-								_light: "#f97316", 
+								_light: "#f97316",
 								_dark: "#fb923c",
 							},
 						},
 						medium: {
 							value: {
-								_light: "#eab308", 
+								_light: "#eab308",
 								_dark: "#facc15",
 							},
 						},
 						low: {
 							value: {
-								_light: "#22c55e", 
+								_light: "#22c55e",
 								_dark: "#4ade80",
 							},
 						},

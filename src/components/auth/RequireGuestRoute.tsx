@@ -1,23 +1,23 @@
-import {useAuth} from "@clerk/react";
-import {Navigate} from "react-router-dom";
-import {ROUTES} from "@/constants/routes";
+import { useAuth } from "@clerk/react";
+import { Navigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 interface RequireGuestRouteProps {
-    children: React.ReactNode;
-    redirectTo?: string;
+	children: React.ReactNode;
+	redirectTo?: string;
 }
 
 export const RequireGuestRoute = ({
-                                      children,
-                                      redirectTo = ROUTES.home,
-                                  }: RequireGuestRouteProps) => {
-    const {isSignedIn, isLoaded} = useAuth();
+	children,
+	redirectTo = ROUTES.home,
+}: RequireGuestRouteProps) => {
+	const { isSignedIn, isLoaded } = useAuth();
 
-    if (!isLoaded) return null;
+	if (!isLoaded) return null;
 
-    if (isSignedIn) {
-        return <Navigate to={redirectTo} replace/>;
-    }
+	if (isSignedIn) {
+		return <Navigate to={redirectTo} replace />;
+	}
 
-    return <>{children}</>;
+	return <>{children}</>;
 };

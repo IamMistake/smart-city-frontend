@@ -17,6 +17,9 @@ export interface Incident {
 	priority: IncidentPriority;
 	type: IncidentType;
 	status: IncidentStatus;
+	latitude?: number;
+	longitude?: number;
+	address?: string;
 	createdAt: string;
 	updatedAt: string;
 	resolvedAt?: string | null;

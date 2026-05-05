@@ -1,12 +1,5 @@
 import { useState } from "react";
-import {
-	Box,
-	VStack,
-	Input,
-	Button,
-	Heading,
-	Text,
-} from "@chakra-ui/react";
+import { Box, VStack, Input, Button, Heading, Text } from "@chakra-ui/react";
 
 type Message = {
 	role: "user" | "bot";
@@ -26,19 +19,12 @@ export function ChatbotPage() {
 	const sendMessage = () => {
 		if (!input) return;
 
-		const randomReply =
-			replies[Math.floor(Math.random() * replies.length)];
+		const randomReply = replies[Math.floor(Math.random() * replies.length)];
 
-		setMessages((prev) => [
-			...prev,
-			{ role: "user", text: input },
-		]);
+		setMessages((prev) => [...prev, { role: "user", text: input }]);
 
 		setTimeout(() => {
-			setMessages((prev) => [
-				...prev,
-				{ role: "bot", text: randomReply },
-			]);
+			setMessages((prev) => [...prev, { role: "bot", text: randomReply }]);
 		}, 500);
 
 		setInput("");
@@ -46,7 +32,6 @@ export function ChatbotPage() {
 
 	return (
 		<VStack h="100vh" gap={0} bgGradient="linear(to-br, blue.50, purple.100)">
-
 			{/* Header */}
 			<Box w="100%" p="4" bg="white" boxShadow="sm">
 				<Heading size="md">🤖 Smart City Chatbot</Heading>
@@ -83,12 +68,7 @@ export function ChatbotPage() {
 			</VStack>
 
 			{/* Input */}
-			<Box
-				w="100%"
-				p="4"
-				bg="white"
-				borderTop="1px solid #eee"
-			>
+			<Box w="100%" p="4" bg="white" borderTop="1px solid #eee">
 				<Box display="flex" gap="2" maxW="700px" mx="auto">
 					<Input
 						value={input}

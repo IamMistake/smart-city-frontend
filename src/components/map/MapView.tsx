@@ -11,6 +11,7 @@ import {
 
 import { mockEvents } from "./mockData/mockEvents.ts";
 import { mockPollution } from "./mockData/mockPollution.ts";
+import { getDirectionsLink } from "@/utils/getDirectionsLink";
 
 function syncLayers(
 	map: maplibregl.Map,
@@ -63,6 +64,45 @@ export function MapView() {
 		map.on("load", () => {
 			styleLoadedRef.current = true;
 			syncLayers(map, { showEvents: true, showPollution: true });
+		});
+
+		map.on("mousemove", (event) => {
+			if (!map.getLayer("events-layer")) {
+				map.getCanvas().style.cursor = "";
+				return;
+			}
+
+			const hasEventFeature =
+				map.queryRenderedFeatures(event.point, {
+					layers: ["events-layer"],
+				}).length > 0;
+
+			map.getCanvas().style.cursor = hasEventFeature ? "pointer" : "";
+		});
+
+		map.on("click", (event) => {
+			if (!map.getLayer("events-layer")) {
+				return;
+			}
+
+			const feature = map.queryRenderedFeatures(event.point, {
+				layers: ["events-layer"],
+			})[0];
+
+			if (!feature || feature.geometry.type !== "Point") {
+				return;
+			}
+
+			const [longitude, latitude] = feature.geometry.coordinates as [
+				number,
+				number,
+			];
+
+			window.open(
+				getDirectionsLink(latitude, longitude),
+				"_blank",
+				"noopener,noreferrer",
+			);
 		});
 
 		return () => {

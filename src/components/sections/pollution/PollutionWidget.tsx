@@ -43,21 +43,24 @@ export function PollutionWidget({
 	});
 
 	useEffect(() => {
-		console.log("🔍 Effect running", { metric, city });
 		let cancelled = false;
 		dispatch({ type: "FETCH_START" });
 
 		fetchPollutionData(metric)
-			.then((res) => {
-				console.log("✅ Fetch success", res);
-				if (cancelled) return;
-				dispatch({ type: "FETCH_SUCCESS", payload: res });
-				onDataLoadedRef.current?.(res);
+			.then((response) => {
+				if (cancelled) {
+					return;
+				}
+
+				dispatch({ type: "FETCH_SUCCESS", payload: response });
+				onDataLoadedRef.current?.(response);
 			})
-			.catch((err: Error) => {
-				console.error("❌ Fetch error", err);
-				if (cancelled) return;
-				dispatch({ type: "FETCH_ERROR", payload: err.message });
+			.catch((error: Error) => {
+				if (cancelled) {
+					return;
+				}
+
+				dispatch({ type: "FETCH_ERROR", payload: error.message });
 			});
 
 		return () => {
@@ -76,13 +79,11 @@ export function PollutionWidget({
 				borderRadius="lg"
 				bg="bg.panel"
 			>
-				{/* header */}
 				<HStack justify="space-between">
 					<Skeleton height="22px" width="180px" />
 					<Skeleton height="20px" width="80px" borderRadius="md" />
 				</HStack>
 
-				{/* city value */}
 				<HStack gap="3">
 					<Skeleton height="52px" width="52px" borderRadius="full" />
 					<VStack align="start" gap="2">
@@ -91,10 +92,8 @@ export function PollutionWidget({
 					</VStack>
 				</HStack>
 
-				{/* legend */}
 				<Skeleton height="12px" width="100%" borderRadius="md" />
 
-				{/* stations */}
 				<VStack gap="2">
 					<Skeleton height="48px" borderRadius="md" />
 					<Skeleton height="48px" borderRadius="md" />
@@ -117,9 +116,8 @@ export function PollutionWidget({
 	}
 
 	const { data } = state;
-
-	const validStations = data.stations.filter((s) =>
-		isInMacedonia(s.position.lat, s.position.lng),
+	const validStations = data.stations.filter((station) =>
+		isInMacedonia(station.position.lat, station.position.lng),
 	);
 	const hasStations = validStations.length > 0;
 	const hasCityValue = data.summary.cityValue != null;
@@ -127,8 +125,9 @@ export function PollutionWidget({
 	const frontendLegend = getLegendForMetric(data.metric);
 	const cityLegend = hasCityValue
 		? frontendLegend.find(
-				(l) =>
-					data.summary.cityValue! >= l.from && data.summary.cityValue! <= l.to,
+				(legendItem) =>
+					data.summary.cityValue! >= legendItem.from &&
+					data.summary.cityValue! <= legendItem.to,
 			)
 		: undefined;
 
@@ -226,14 +225,15 @@ export function PollutionWidget({
 								<VStack align="stretch" gap="2">
 									{validStations.map((station) => {
 										const stationLegend = frontendLegend.find(
-											(l) =>
-												station.current.value >= l.from &&
-												station.current.value <= l.to,
+											(legendItem) =>
+												station.current.value >= legendItem.from &&
+												station.current.value <= legendItem.to,
 										);
 										const displayName = formatSensorName(
 											station.stationId,
 											station.name,
 										);
+
 										return (
 											<HStack
 												key={station.stationId}

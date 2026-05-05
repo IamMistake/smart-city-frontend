@@ -71,6 +71,7 @@ export const METRICS: { key: PollutionMetric; label: string; icon: string }[] =
 		{ key: "pressure", label: "Pressure", icon: "🔵" },
 		{ key: "noise_dba", label: "Noise", icon: "🔊" },
 	];
+
 export const CITY = "Skopje";
 
 export const MK_BBOX = {
@@ -99,3 +100,16 @@ export const DARK_TILE =
 
 export const LIGHT_TILE =
 	"https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png";
+
+export const HISTORY_WINDOWS = [
+	{ label: "6h", hours: 6, bucket: 15 },
+	{ label: "24h", hours: 24, bucket: 60 },
+	{ label: "48h", hours: 48, bucket: 60 },
+	{ label: "7d", hours: 168, bucket: 240 },
+] as const;
+
+export const CHART_DIMENSIONS = {
+	W: 600,
+	H: 200,
+	PAD: { top: 16, right: 16, bottom: 32, left: 44 },
+} as const;

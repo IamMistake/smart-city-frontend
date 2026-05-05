@@ -1,3 +1,3 @@
 export function useIsDark() {
-  return document.documentElement.dataset.theme === "dark";
+	return document.documentElement.dataset.theme === "dark";
 }

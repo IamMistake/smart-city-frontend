@@ -117,7 +117,7 @@ export function ChatbotPage() {
 						borderRadius="full"
 						colorScheme="blue"
 						px="5"
-						isDisabled={loading}
+						disabled={loading}
 					>
 						Send
 					</Button>

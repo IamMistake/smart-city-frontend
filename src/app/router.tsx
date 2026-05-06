@@ -30,14 +30,13 @@ export const router = createBrowserRouter([
 				),
 			},
 			{ path: ROUTES.pollution, element: <PollutionPage /> },
+
+
 			{
 				path: ROUTES.chatbot,
-				element: (
-					<RequireRoleRoute allowedRoles={ALL_ROLES}>
-						<ChatbotPage />
-					</RequireRoleRoute>
-				),
+				element: <ChatbotPage />,
 			},
+
 			{
 				path: ROUTES.login,
 				element: (

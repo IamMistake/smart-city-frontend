@@ -29,9 +29,7 @@ export function ChatbotPage() {
 				body: JSON.stringify({ message: userMessage.text }),
 			});
 
-			if (!res.ok) {
-				throw new Error("Server error");
-			}
+			if (!res.ok) throw new Error("Server error");
 
 			const data = await res.json();
 
@@ -40,8 +38,6 @@ export function ChatbotPage() {
 				{ role: "bot", text: data.reply },
 			]);
 		} catch (error) {
-			console.error(error);
-
 			setMessages((prev) => [
 				...prev,
 				{ role: "bot", text: "⚠️ Cannot reach backend" },
@@ -52,33 +48,77 @@ export function ChatbotPage() {
 	};
 
 	return (
-		<VStack h="100vh" gap={0}>
+		<VStack h="100vh" gap={0} bg="#F2F2F7">
 			{/* Header */}
-			<Box w="100%" p="4" bg="white">
-				<Heading size="md">Chatbot</Heading>
+			<Box w="100%" p="4" bg="white" boxShadow="sm">
+				<Heading size="md">💬 Smart City Chat</Heading>
 			</Box>
 
 			{/* Messages */}
-			<VStack flex="1" w="100%" maxW="700px" mx="auto" p="4" gap="4">
-				{messages.length === 0 && <Text>Start chatting 👋</Text>}
+			<VStack
+				flex="1"
+				w="100%"
+				maxW="700px"
+				mx="auto"
+				p="4"
+				gap="3"
+				overflowY="auto"
+			>
+				{messages.length === 0 && (
+					<Text color="gray.500">Start chatting 👋</Text>
+				)}
 
 				{messages.map((m, i) => (
-					<Box key={i}>{m.text}</Box>
+					<Box
+						key={i}
+						alignSelf={m.role === "user" ? "flex-end" : "flex-start"}
+						bg={m.role === "user" ? "#007AFF" : "#E5E5EA"}
+						color={m.role === "user" ? "white" : "black"}
+						px="4"
+						py="2"
+						borderRadius="18px"
+						maxW="70%"
+						fontSize="14px"
+						lineHeight="1.4"
+						boxShadow="sm"
+					>
+						{m.text}
+					</Box>
 				))}
 
-				{loading && <Text>Typing...</Text>}
+				{loading && (
+					<Box
+						alignSelf="flex-start"
+						bg="#E5E5EA"
+						px="4"
+						py="2"
+						borderRadius="18px"
+						fontSize="14px"
+					>
+						Typing...
+					</Box>
+				)}
 			</VStack>
 
 			{/* Input */}
-			<Box w="100%" p="4">
+			<Box w="100%" p="3" bg="white" borderTop="1px solid #eee">
 				<Box display="flex" gap="2" maxW="700px" mx="auto">
 					<Input
 						value={input}
 						onChange={(e) => setInput(e.target.value)}
-						placeholder="Type message..."
+						placeholder="..."
+						borderRadius="full"
+						bg="gray.100"
+						px="4"
 						onKeyDown={(e) => e.key === "Enter" && sendMessage()}
 					/>
-					<Button onClick={sendMessage} disabled={loading}>
+					<Button
+						onClick={sendMessage}
+						borderRadius="full"
+						colorScheme="blue"
+						px="5"
+						disabled={loading}
+					>
 						Send
 					</Button>
 				</Box>

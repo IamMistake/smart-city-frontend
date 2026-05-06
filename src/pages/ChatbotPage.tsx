@@ -37,7 +37,7 @@ export function ChatbotPage() {
 				...prev,
 				{ role: "bot", text: data.reply },
 			]);
-		} catch (error) {
+		} catch  {
 			setMessages((prev) => [
 				...prev,
 				{ role: "bot", text: "⚠️ Cannot reach backend" },

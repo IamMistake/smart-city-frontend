@@ -108,4 +108,5 @@ src/
 - Request interceptor attaches Clerk bearer token from `ClerkAuthBridge`
 - `src/app/providers/CurrentUserSync.tsx` calls Spring `/api/auth/me` after login to provision/sync the local backend user
 - `src/services/api/healthService.ts` includes per-service and aggregate microservice health checks for `/api/health/`
+- `src/services/api/chatbotService.ts` sends chat requests to FastAPI `/api/chatbot/*`
 - Landing page backend cards include a `Test Auth Endpoint` button for `/api/auth/me` on each service

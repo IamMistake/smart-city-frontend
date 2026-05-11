@@ -7,10 +7,21 @@ export type ApiError = {
 
 export function normalizeApiError(error: unknown): ApiError {
 	if (axios.isAxiosError(error)) {
+		const detail = error.response?.data?.detail;
+		const detailMessage =
+			typeof detail === "string"
+				? detail
+				: typeof detail?.message === "string"
+					? detail.message
+					: undefined;
+
 		return {
 			status: error.response?.status,
 			message:
-				error.response?.data?.message ?? error.message ?? "Request failed",
+				detailMessage ??
+				error.response?.data?.message ??
+				error.message ??
+				"Request failed",
 		};
 	}
 

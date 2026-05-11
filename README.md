@@ -65,6 +65,7 @@ Notes:
 
 - The frontend image reads `smart-city-frontend/.env` during the Vite build.
 - The backend services read `smart-city-backend/.env` through Compose `env_file`.
+- Incident demo data is seeded when `SPRING_PROFILES_ACTIVE=demo` is enabled in `smart-city-backend/.env`.
 - The FastAPI container runs `alembic upgrade head` before starting `uvicorn`.
 
 `bun` commands in this README work on Windows, macOS, and Linux.

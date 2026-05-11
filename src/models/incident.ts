@@ -23,7 +23,7 @@ export interface CreateIncidentRequest {
 }
 
 export interface Incident {
-	id: number;
+	id: string;
 	title: string;
 	description?: string | null;
 	priority: IncidentPriority;

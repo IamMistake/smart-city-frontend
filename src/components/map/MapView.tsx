@@ -26,6 +26,7 @@ type MapViewProps = {
 	selectedCoordinates?: Coordinates | null;
 	showMockLayers?: boolean;
 	showLayerToggles?: boolean;
+	height?: string;
 };
 
 export function MapView({
@@ -33,6 +34,7 @@ export function MapView({
 	selectedCoordinates,
 	showMockLayers = true,
 	showLayerToggles = true,
+	height,
 }: MapViewProps) {
 	const mapContainer = useRef<HTMLDivElement | null>(null);
 	const mapRef = useRef<maplibregl.Map | null>(null);
@@ -195,9 +197,18 @@ export function MapView({
 
 	return (
 		<Box position="relative">
-			<AspectRatio ratio={16 / 9}>
-				<Box ref={mapContainer} borderRadius="xl" overflow="hidden" />
-			</AspectRatio>
+			{height ? (
+				<Box
+					ref={mapContainer}
+					borderRadius="xl"
+					overflow="hidden"
+					h={height}
+				/>
+			) : (
+				<AspectRatio ratio={16 / 9}>
+					<Box ref={mapContainer} borderRadius="xl" overflow="hidden" />
+				</AspectRatio>
+			)}
 
 			{showLayerToggles && showMockLayers && (
 				<Box position="absolute" top={3} right={3} zIndex={10}>

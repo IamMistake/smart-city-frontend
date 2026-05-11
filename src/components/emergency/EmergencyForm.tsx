@@ -12,9 +12,15 @@ type FormErrors = Partial<Record<keyof CreateIncidentRequest, string>>;
 
 type Props = {
 	onCreated?: () => void;
+	mapHeight?: string;
+	showContainer?: boolean;
 };
 
-export default function EmergencyForm({ onCreated }: Props) {
+export default function EmergencyForm({
+	onCreated,
+	mapHeight,
+	showContainer = true,
+}: Props) {
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [priority, setPriority] = useState<IncidentPriority>("LOW");
@@ -134,15 +140,15 @@ export default function EmergencyForm({ onCreated }: Props) {
 		}
 	};
 
-	return (
+	const formContent = (
 		<Box
 			as="form"
 			onSubmit={handleSubmit}
-			borderWidth="1px"
+			borderWidth={showContainer ? "1px" : "0"}
 			borderRadius="lg"
-			p="5"
-			mb="6"
-			shadow="sm"
+			p={showContainer ? "5" : "0"}
+			mb={showContainer ? "6" : "0"}
+			shadow={showContainer ? "sm" : "none"}
 		>
 			<VStack align="stretch" gap="3">
 				{submitError && (
@@ -239,6 +245,7 @@ export default function EmergencyForm({ onCreated }: Props) {
 						selectedCoordinates={selectedCoordinates}
 						showMockLayers={false}
 						showLayerToggles={false}
+						height={mapHeight}
 					/>
 					{errors.latitude && (
 						<Text mt="1" color="red.500" fontSize="sm">
@@ -265,4 +272,6 @@ export default function EmergencyForm({ onCreated }: Props) {
 			</VStack>
 		</Box>
 	);
+
+	return formContent;
 }

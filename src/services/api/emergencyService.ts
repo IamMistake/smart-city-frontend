@@ -1,4 +1,9 @@
-import type { CreateIncidentRequest, Incident } from "../../models/incident";
+import { isAxiosError } from "axios";
+import type {
+	CreateIncidentRequest,
+	Incident,
+	IncidentStatus,
+} from "../../models/incident";
 
 import { springClient } from "../http/springClient";
 
@@ -26,5 +31,24 @@ export const createIncident = async (
 		console.error("Failed to create incident:", error);
 
 		throw new Error("Failed to create incident");
+	}
+};
+
+export const updateIncidentStatus = async (
+	id: Incident["id"],
+	status: IncidentStatus,
+): Promise<Incident> => {
+	try {
+		const res = await springClient.patch(`${BASE_URL}/${id}`, { status });
+
+		return res.data;
+	} catch (error) {
+		console.error("Failed to update incident:", error);
+
+		if (isAxiosError(error) && error.response?.status === 403) {
+			throw new Error("You do not have permission to resolve incidents");
+		}
+
+		throw new Error("Failed to update incident");
 	}
 };

@@ -1,5 +1,5 @@
-import { Show, UserButton } from "@clerk/react";
-import { Box, Container, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
+import { Box, Button, Container, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import { useColorMode } from "@/components/ui/color-mode";
 import { ROUTES } from "@/constants/routes";
@@ -70,6 +70,20 @@ export function Navbar() {
 					</HStack>
 
 					<HStack gap={3}>
+						<Show when="signed-out">
+							<HStack gap={3}>
+								<SignInButton mode="modal">
+									<Button variant="ghost" colorPalette="accent" size="sm">
+										Log in
+									</Button>
+								</SignInButton>
+								<SignUpButton mode="modal">
+									<Button colorPalette="accent" size="sm">
+										Sign up
+									</Button>
+								</SignUpButton>
+							</HStack>
+						</Show>
 						<Show when="signed-in">
 							<UserButton>
 								<UserButton.MenuItems>

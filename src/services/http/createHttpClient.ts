@@ -4,9 +4,19 @@ import axios, {
 	type InternalAxiosRequestConfig,
 } from "axios";
 import { normalizeApiError } from "@/types/api";
-import { getAccessToken } from "@/services/http/authToken";
 
-async function attachBearerToken(config: InternalAxiosRequestConfig) {
+type CreateHttpClientOptions = {
+	getAccessToken?: () => Promise<string | null>;
+};
+
+async function attachBearerToken(
+	config: InternalAxiosRequestConfig,
+	getAccessToken?: () => Promise<string | null>,
+) {
+	if (!getAccessToken) {
+		return config;
+	}
+
 	const token = await getAccessToken();
 
 	if (!token) {
@@ -24,16 +34,21 @@ async function attachBearerToken(config: InternalAxiosRequestConfig) {
 	return config;
 }
 
-export function createHttpClient(baseURL: string): AxiosInstance {
+export function createHttpClient(
+	baseURL: string,
+	options: CreateHttpClientOptions = {},
+): AxiosInstance {
 	const client = axios.create({
 		baseURL,
 		timeout: 15000,
-		headers: {
+			headers: {
 			"Content-Type": "application/json",
 		},
 	});
 
-	client.interceptors.request.use(attachBearerToken);
+	client.interceptors.request.use((config) =>
+		attachBearerToken(config, options.getAccessToken),
+	);
 	client.interceptors.response.use(
 		(response) => response,
 		(error) => Promise.reject(normalizeApiError(error)),

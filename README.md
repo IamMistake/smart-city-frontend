@@ -39,6 +39,34 @@ cp .env.example .env
 bun run dev
 ```
 
+## Docker
+
+The repo includes a full-stack Docker Compose setup at the repository root.
+
+Before building the stack:
+
+1. Ensure `smart-city-frontend/.env` contains the browser-facing API URLs.
+2. Ensure `smart-city-backend/.env` contains backend runtime secrets and service env vars.
+
+Start the full stack from the repo root:
+
+```bash
+docker compose up --build
+```
+
+Published ports:
+
+- Frontend: `http://localhost:3000`
+- Spring service: `http://localhost:8080`
+- FastAPI service: `http://localhost:8000`
+- Postgres: `localhost:5432`
+
+Notes:
+
+- The frontend image reads `smart-city-frontend/.env` during the Vite build.
+- The backend services read `smart-city-backend/.env` through Compose `env_file`.
+- The FastAPI container runs `alembic upgrade head` before starting `uvicorn`.
+
 `bun` commands in this README work on Windows, macOS, and Linux.
 
 ## Scripts

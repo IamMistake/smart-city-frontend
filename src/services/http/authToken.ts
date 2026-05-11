@@ -1,11 +1,20 @@
 type AccessTokenGetter = () => Promise<string | null> | string | null;
 
-let accessTokenGetter: AccessTokenGetter = async () => null;
+let defaultAccessTokenGetter: AccessTokenGetter = async () => null;
+let templateAccessTokenGetter: AccessTokenGetter = async () => null;
 
-export function setAccessTokenGetter(getter: AccessTokenGetter) {
-	accessTokenGetter = getter;
+export function setDefaultAccessTokenGetter(getter: AccessTokenGetter) {
+	defaultAccessTokenGetter = getter;
 }
 
-export async function getAccessToken() {
-	return await accessTokenGetter();
+export function setTemplateAccessTokenGetter(getter: AccessTokenGetter) {
+	templateAccessTokenGetter = getter;
+}
+
+export async function getDefaultAccessToken() {
+	return await defaultAccessTokenGetter();
+}
+
+export async function getTemplateAccessToken() {
+	return await templateAccessTokenGetter();
 }

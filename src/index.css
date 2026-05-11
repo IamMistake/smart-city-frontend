@@ -14,3 +14,62 @@ body {
 		"Manrope Variable", "Manrope", "Avenir Next", "Segoe UI", Helvetica, Arial,
 		sans-serif;
 }
+
+.map-surface .maplibregl-ctrl-top-right,
+.map-surface .maplibregl-ctrl-top-left {
+	display: none;
+}
+
+.map-surface .maplibregl-ctrl-bottom-right {
+	bottom: 16px;
+	right: 16px;
+}
+
+.map-surface .maplibregl-ctrl-group {
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.map-surface .maplibregl-ctrl-group button {
+	width: 40px;
+	height: 40px;
+	background: #fff;
+}
+
+.map-surface .maplibregl-ctrl-group button + button {
+	border-top: 1px solid #e2e8f0;
+}
+
+.map-surface .maplibregl-ctrl button.maplibregl-ctrl-compass {
+	display: none;
+}
+
+.map-frame {
+	transition: outline 200ms ease;
+	outline: 2px solid transparent;
+	outline-offset: -2px;
+}
+
+.map-frame-focused {
+	outline: 2px solid var(--color-brand);
+}
+
+.map-focus-prompt {
+	animation: map-focus-pulse 2s ease-in-out infinite;
+}
+
+@keyframes map-focus-pulse {
+	0% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.04);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}

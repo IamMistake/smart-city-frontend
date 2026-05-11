@@ -1,5 +1,13 @@
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
-import { Box, Button, Container, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Container,
+	Flex,
+	HStack,
+	Icon,
+	Text,
+} from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
 import { useColorMode } from "@/components/ui/color-mode";
 import { ROUTES } from "@/constants/routes";
@@ -31,12 +39,13 @@ export function Navbar() {
 			position="sticky"
 			top={0}
 			zIndex={1000}
+			h="56px"
 			backdropFilter="blur(10px)"
 			borderBottom="1px solid"
 			borderColor="border"
 		>
-			<Container maxW="7xl" py={4}>
-				<Flex justify="space-between" align="center" gap={4}>
+			<Container maxW="7xl" h="full" py={0}>
+				<Flex justify="space-between" align="center" gap={4} h="full">
 					<HStack gap={6} flexWrap="wrap">
 						<NavLink to={ROUTES.home}>
 							<Text fontWeight="bold" color="fg" whiteSpace="nowrap">

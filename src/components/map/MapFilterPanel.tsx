@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { Box, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Text, VStack } from "@chakra-ui/react";
+import { useEffect, useRef } from "react";
+import type { ReactNode } from "react";
 import type { IncidentType } from "@/models/incident";
+import { FaLayerGroup, FaTimes } from "react-icons/fa";
 import { ALL_INCIDENT_TYPES, ALL_POLLUTION_LEVELS } from "./types";
 import type { MapFilters } from "./types";
 import { EVENT_TYPE_COLORS, EVENT_TYPE_LABELS } from "./layers/eventLayer";
@@ -12,118 +14,161 @@ import {
 interface Props {
 	filters: MapFilters;
 	onFiltersChange: (filters: MapFilters) => void;
+	isOpen: boolean;
+	onOpen: () => void;
+	onClose: () => void;
 }
 
-export function MapFilterPanel({ filters, onFiltersChange }: Props) {
-	const [isOpen, setIsOpen] = useState(true);
+export function MapFilterPanel({
+	filters,
+	onFiltersChange,
+	isOpen,
+	onOpen,
+	onClose,
+}: Props) {
+	const drawerRef = useRef<HTMLDivElement | null>(null);
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
+		const handlePointerDown = (event: MouseEvent) => {
+			const target = event.target as Node;
+			if (
+				drawerRef.current?.contains(target) ||
+				buttonRef.current?.contains(target)
+			) {
+				return;
+			}
+
+			onClose();
+		};
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === "Escape") {
+				onClose();
+			}
+		};
+
+		document.addEventListener("mousedown", handlePointerDown);
+		document.addEventListener("keydown", handleKeyDown);
+
+		return () => {
+			document.removeEventListener("mousedown", handlePointerDown);
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isOpen, onClose]);
 
 	const toggleEventType = (type: IncidentType) => {
 		const next = filters.activeEventTypes.includes(type)
-			? filters.activeEventTypes.filter((t) => t !== type)
+			? filters.activeEventTypes.filter((item) => item !== type)
 			: [...filters.activeEventTypes, type];
+
 		onFiltersChange({ ...filters, activeEventTypes: next });
 	};
 
 	const togglePollutionLevel = (level: number) => {
 		const next = filters.activePollutionLevels.includes(level)
-			? filters.activePollutionLevels.filter((l) => l !== level)
+			? filters.activePollutionLevels.filter((item) => item !== level)
 			: [...filters.activePollutionLevels, level];
+
 		onFiltersChange({ ...filters, activePollutionLevels: next });
 	};
 
-	const allTypesActive =
-		filters.activeEventTypes.length === ALL_INCIDENT_TYPES.length;
-	const allLevelsActive =
-		filters.activePollutionLevels.length === ALL_POLLUTION_LEVELS.length;
-
 	return (
-		<Box
-			bg="white"
-			borderRadius="xl"
-			border="1px solid"
-			borderColor="gray.200"
-			_dark={{ bg: "gray.900", borderColor: "gray.700" }}
-			shadow="md"
-			overflow="hidden"
-			minW="210px"
-		>
-			<HStack
-				px={3}
-				py={2.5}
-				borderBottom={isOpen ? "1px solid" : "none"}
-				borderColor="gray.100"
-				_dark={{ borderColor: "gray.700" }}
-				justify="space-between"
+		<>
+			<Box
+				as="button"
+				ref={buttonRef}
+				onClick={isOpen ? onClose : onOpen}
+				position="absolute"
+				top="16px"
+				right="16px"
+				zIndex={20}
+				w="40px"
+				h="40px"
+				borderRadius="8px"
+				border="1px solid"
+				borderColor="gray.200"
+				bg="white"
+				boxShadow="0 8px 20px rgba(15, 23, 42, 0.12)"
+				color="gray.700"
+				display="grid"
+				placeItems="center"
 				cursor="pointer"
-				onClick={() => setIsOpen((v) => !v)}
-				_hover={{ bg: "gray.50" }}
+				aria-label="Open layers and filters"
+				pointerEvents="auto"
 			>
-				<Text fontWeight="semibold" fontSize="sm">
-					Layers & Filters
-				</Text>
-				<Text fontSize="xs" color="gray.400" userSelect="none">
-					{isOpen ? "▲" : "▼"}
-				</Text>
-			</HStack>
+				<Icon as={FaLayerGroup} boxSize={4} />
+			</Box>
 
-			{isOpen && (
-				<VStack align="stretch" gap={0} p={4} pt={3}>
-					{/* Incidents section */}
-					<LayerRow
+			<Box
+				ref={drawerRef}
+				position="absolute"
+				top="0"
+				right="0"
+				bottom="0"
+				w="300px"
+				bg="white"
+				borderLeft="1px solid"
+				borderColor="gray.200"
+				boxShadow="-12px 0 32px rgba(15, 23, 42, 0.12)"
+				transform={isOpen ? "translateX(0)" : "translateX(100%)"}
+				transition="transform 240ms ease"
+				zIndex={19}
+				pointerEvents={isOpen ? "auto" : "none"}
+			>
+				<Flex
+					align="center"
+					justify="space-between"
+					px="18px"
+					py="16px"
+					borderBottom="1px solid"
+					borderColor="gray.100"
+				>
+					<Text fontSize="15px" fontWeight="500" color="gray.900">
+						Layers & Filters
+					</Text>
+					<Box
+						as="button"
+						onClick={onClose}
+						fontSize="18px"
+						lineHeight={1}
+						color="gray.500"
+						aria-label="Close layers and filters"
+					>
+						<Icon as={FaTimes} boxSize={4} />
+					</Box>
+				</Flex>
+
+				<VStack align="stretch" gap="18px" p="18px">
+					<FilterSection
 						label="Incidents"
-						accentColor={EVENT_TYPE_COLORS.FIRE}
 						enabled={filters.showEvents}
 						onToggle={() =>
-							onFiltersChange({ ...filters, showEvents: !filters.showEvents })
+							onFiltersChange({
+								...filters,
+								showEvents: !filters.showEvents,
+							})
 						}
-					/>
-
-					{filters.showEvents && (
-						<VStack align="stretch" gap={0.5} pl={2} pb={4}>
-							<HStack justify="space-between" mb={1}>
-								<Text fontSize="xs" color="gray.500">
-									Types
-								</Text>
-								<Box
-									as="span"
-									fontSize="xs"
-									color="blue.500"
-									cursor="pointer"
-									onClick={() =>
-										onFiltersChange({
-											...filters,
-											activeEventTypes: allTypesActive
-												? []
-												: [...ALL_INCIDENT_TYPES],
-										})
-									}
-								>
-									{allTypesActive ? "None" : "All"}
-								</Box>
-							</HStack>
+					>
+						<HStack gap="8px" flexWrap="wrap">
 							{ALL_INCIDENT_TYPES.map((type) => (
-								<TypeRow
+								<PillCheckbox
 									key={type}
 									label={EVENT_TYPE_LABELS[type]}
 									color={EVENT_TYPE_COLORS[type]}
-									active={filters.activeEventTypes.includes(type)}
-									onToggle={() => toggleEventType(type)}
+									checked={filters.activeEventTypes.includes(type)}
+									onClick={() => toggleEventType(type)}
 								/>
 							))}
-						</VStack>
-					)}
+						</HStack>
+					</FilterSection>
 
-					<Box
-						borderTop="1px solid"
-						borderColor="gray.100"
-						_dark={{ borderColor: "gray.700" }}
-						my={1}
-					/>
-
-					{/* Pollution section */}
-					<LayerRow
+					<FilterSection
 						label="Pollution Stations"
-						accentColor={POLLUTION_LEVEL_COLORS[1]}
 						enabled={filters.showPollution}
 						onToggle={() =>
 							onFiltersChange({
@@ -131,118 +176,113 @@ export function MapFilterPanel({ filters, onFiltersChange }: Props) {
 								showPollution: !filters.showPollution,
 							})
 						}
-					/>
-
-					{filters.showPollution && (
-						<VStack align="stretch" gap={0.5} pl={2} pb={4}>
-							<HStack justify="space-between" mb={1}>
-								<Text fontSize="xs" color="gray.500">
-									Levels
-								</Text>
-								<Box
-									as="span"
-									fontSize="xs"
-									color="blue.500"
-									cursor="pointer"
-									onClick={() =>
-										onFiltersChange({
-											...filters,
-											activePollutionLevels: allLevelsActive
-												? []
-												: [...ALL_POLLUTION_LEVELS],
-										})
-									}
-								>
-									{allLevelsActive ? "None" : "All"}
-								</Box>
-							</HStack>
+					>
+						<HStack gap="8px" flexWrap="wrap">
 							{ALL_POLLUTION_LEVELS.map((level) => (
-								<TypeRow
+								<PillCheckbox
 									key={level}
 									label={POLLUTION_LEVEL_LABELS[level]}
 									color={POLLUTION_LEVEL_COLORS[level]}
-									active={filters.activePollutionLevels.includes(level)}
-									onToggle={() => togglePollutionLevel(level)}
+									checked={filters.activePollutionLevels.includes(level)}
+									onClick={() => togglePollutionLevel(level)}
 								/>
 							))}
-						</VStack>
-					)}
+						</HStack>
+					</FilterSection>
 				</VStack>
-			)}
+			</Box>
+		</>
+	);
+}
+
+function FilterSection({
+	label,
+	enabled,
+	onToggle,
+	children,
+}: {
+	label: string;
+	enabled: boolean;
+	onToggle: () => void;
+	children: ReactNode;
+}) {
+	return (
+		<VStack align="stretch" gap="12px">
+			<Flex align="center" justify="space-between" gap="12px">
+				<Text fontSize="14px" fontWeight="500" color="gray.900">
+					{label}
+				</Text>
+				<ToggleSwitch checked={enabled} onToggle={onToggle} />
+			</Flex>
+			<Box opacity={enabled ? 1 : 0.45} transition="opacity 0.2s ease">
+				{children}
+			</Box>
+		</VStack>
+	);
+}
+
+function ToggleSwitch({
+	checked,
+	onToggle,
+}: {
+	checked: boolean;
+	onToggle: () => void;
+}) {
+	return (
+		<Box
+			as="button"
+			onClick={onToggle}
+			w="42px"
+			h="24px"
+			borderRadius="999px"
+			bg={checked ? "#22c55e" : "#cbd5e1"}
+			position="relative"
+			transition="background 0.2s ease"
+			aria-pressed={checked}
+		>
+			<Box
+				position="absolute"
+				top="3px"
+				left={checked ? "21px" : "3px"}
+				w="18px"
+				h="18px"
+				borderRadius="full"
+				bg="white"
+				boxShadow="0 1px 3px rgba(15, 23, 42, 0.25)"
+				transition="left 0.2s ease"
+			/>
 		</Box>
 	);
 }
 
-function LayerRow({
-	label,
-	accentColor,
-	enabled,
-	onToggle,
-}: {
-	label: string;
-	accentColor: string;
-	enabled: boolean;
-	onToggle: () => void;
-}) {
-	return (
-		<HStack
-			justify="space-between"
-			py={1.5}
-			px={1}
-			borderRadius="md"
-			cursor="pointer"
-			onClick={onToggle}
-			_hover={{ bg: "gray.50" }}
-		>
-			<HStack gap={2}>
-				<Box
-					w={3}
-					h={3}
-					borderRadius="sm"
-					bg={enabled ? accentColor : "gray.300"}
-					transition="background 0.15s"
-					flexShrink={0}
-				/>
-				<Text fontSize="sm" fontWeight="semibold">
-					{label}
-				</Text>
-			</HStack>
-			<Text
-				fontSize="xs"
-				color={enabled ? "green.500" : "gray.400"}
-				fontWeight="medium"
-			>
-				{enabled ? "ON" : "OFF"}
-			</Text>
-		</HStack>
-	);
-}
-
-function TypeRow({
+function PillCheckbox({
 	label,
 	color,
-	active,
-	onToggle,
+	checked,
+	onClick,
 }: {
 	label: string;
 	color: string;
-	active: boolean;
-	onToggle: () => void;
+	checked: boolean;
+	onClick: () => void;
 }) {
 	return (
-		<HStack
-			gap={2}
-			py={1}
-			px={1}
-			borderRadius="md"
-			cursor="pointer"
-			opacity={active ? 1 : 0.4}
-			onClick={onToggle}
-			_hover={{ opacity: 1, bg: "gray.50" }}
-			transition="opacity 0.15s"
+		<Box
+			as="button"
+			onClick={onClick}
+			px="10px"
+			py="6px"
+			fontSize="12px"
+			fontWeight="500"
+			borderRadius="999px"
+			border="1px solid"
+			borderColor={checked ? color : "gray.300"}
+			bg={checked ? color : "white"}
+			color={checked ? "white" : "gray.700"}
+			transition="all 0.15s ease"
+			_hover={{ borderColor: color }}
 		>
-			<Box w={2.5} h={2.5} borderRadius="full" bg={color} flexShrink={0} />
-			<Text fontSize="xs">{label}</Text>
-		</HStack>
+			{label}
+		</Box>
 	);
 }

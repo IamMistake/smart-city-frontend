@@ -11,6 +11,7 @@ export interface EventFeatureProperties {
 	description?: string | null;
 	priority: IncidentPriority;
 	status: IncidentStatus;
+	occurredAt?: string;
 }
 
 export interface PollutionFeatureProperties {
@@ -18,6 +19,8 @@ export interface PollutionFeatureProperties {
 	stationName: string;
 	value?: number;
 	metric?: string;
+	pm25?: number;
+	pm10?: number;
 }
 
 export type SelectedMarker =

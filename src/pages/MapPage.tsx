@@ -1,11 +1,10 @@
-import { Heading, VStack } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { MapView } from "@/components/map/MapView.tsx";
 
 export function MapPage() {
 	return (
-		<VStack align="stretch" gap="12">
-			<Heading size="lg">Map</Heading>
-			<MapView />
-		</VStack>
+		<Box>
+			<MapView height="calc(100vh - 56px)" enableFocusGate />
+		</Box>
 	);
 }

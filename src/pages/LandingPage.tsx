@@ -123,6 +123,10 @@ export function LandingPage() {
 		[],
 	);
 
+	const handleProvisionCurrentUser = useCallback(async () => {
+		await handleAuthTest("spring-service");
+	}, [handleAuthTest]);
+
 	return (
 		<Stack gap="12">
 			<HeroSection city={selectedCity} />
@@ -154,6 +158,16 @@ export function LandingPage() {
 								Refresh Status
 							</Button>
 
+							<Button
+								variant="outline"
+								colorPalette="accent"
+								onClick={handleProvisionCurrentUser}
+								disabled={!isLoaded || !isSignedIn}
+								loading={authTestResults["spring-service"].status === "loading"}
+							>
+								Add Current User to DB
+							</Button>
+
 							{healthReport ? (
 								<Badge colorPalette={resolveBadgeColor(healthReport.status)}>
 									Platform: {healthReport.status}
@@ -163,6 +177,32 @@ export function LandingPage() {
 							)}
 						</HStack>
 					</HStack>
+
+					{!isLoaded ? (
+						<Text color="fg.muted" fontSize="sm">
+							Load auth state to add the current user to the database.
+						</Text>
+					) : null}
+
+					{isLoaded && !isSignedIn ? (
+						<Text color="fg.muted" fontSize="sm">
+							Sign in first, then use "Add Current User to DB" to trigger the
+							Spring auth provisioning endpoint.
+						</Text>
+					) : null}
+
+					{authTestResults["spring-service"].status === "success" ? (
+						<Text color="green.600" fontSize="sm">
+							Current user is available in the Spring-backed database profile.
+						</Text>
+					) : null}
+
+					{authTestResults["spring-service"].status === "error" ? (
+						<Text color="red.500" fontSize="sm">
+							Failed to provision current user through Spring `/api/auth/me`: {" "}
+							{authTestResults["spring-service"].error}
+						</Text>
+					) : null}
 
 					<Stack gap="3">
 						{healthReport?.services.map((service) => (

@@ -3,6 +3,7 @@ import { VStack, Heading, Text, Box, Button } from "@chakra-ui/react";
 import { PollutionMap } from "@/components/sections/pollution/PollutionMap";
 import { PollutionWidget } from "@/components/sections/pollution/PollutionWidget";
 import { PollutionHistoryChart } from "@/components/sections/pollution/PollutionHistoryChart";
+import { PollutionSensorTable } from "@/components/sections/pollution/PollutionSensorTable";
 import type { PollutionData, PollutionMetric } from "@/models/pollution";
 import { getLegendForMetric } from "@/utils/mapUtils";
 import { METRICS, CITY } from "@/constants/metrics";
@@ -20,7 +21,7 @@ export function PollutionPage() {
 	};
 
 	return (
-		<VStack align="stretch" gap="5">
+		<VStack align="stretch" gap="12">
 			<Box>
 				<Heading size="lg" letterSpacing="-0.3px">
 					Air Quality Monitor
@@ -74,6 +75,14 @@ export function PollutionPage() {
 				metric={selectedMetric}
 				unit={pollutionData?.unit ?? ""}
 			/>
+
+			{pollutionData ? (
+				<PollutionSensorTable
+					stations={pollutionData.stations}
+					legend={pollutionData.legend}
+					unit={pollutionData.unit}
+				/>
+			) : null}
 		</VStack>
 	);
 }

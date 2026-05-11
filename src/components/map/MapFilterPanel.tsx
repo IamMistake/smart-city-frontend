@@ -67,7 +67,7 @@ export function MapFilterPanel({ filters, onFiltersChange }: Props) {
 			</HStack>
 
 			{isOpen && (
-				<VStack align="stretch" gap={0} p={3} pt={2}>
+				<VStack align="stretch" gap={0} p={4} pt={3}>
 					{/* Incidents section */}
 					<LayerRow
 						label="Incidents"
@@ -79,7 +79,7 @@ export function MapFilterPanel({ filters, onFiltersChange }: Props) {
 					/>
 
 					{filters.showEvents && (
-						<VStack align="stretch" gap={0.5} pl={2} pb={2}>
+						<VStack align="stretch" gap={0.5} pl={2} pb={4}>
 							<HStack justify="space-between" mb={1}>
 								<Text fontSize="xs" color="gray.500">
 									Types
@@ -134,7 +134,7 @@ export function MapFilterPanel({ filters, onFiltersChange }: Props) {
 					/>
 
 					{filters.showPollution && (
-						<VStack align="stretch" gap={0.5} pl={2} pb={1}>
+						<VStack align="stretch" gap={0.5} pl={2} pb={4}>
 							<HStack justify="space-between" mb={1}>
 								<Text fontSize="xs" color="gray.500">
 									Levels

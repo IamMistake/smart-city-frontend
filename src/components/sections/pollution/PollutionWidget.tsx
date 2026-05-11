@@ -13,12 +13,7 @@ import {
 import type { PollutionData, PollutionMetric } from "@/models/pollution";
 import { fetchPollutionData } from "@/services/api/pollutionService";
 import { LegendBar } from "@/components/sections/pollution/LegendBar";
-import {
-	getLegendForMetric,
-	isInMacedonia,
-	formatSensorName,
-	reducer,
-} from "@/utils/mapUtils";
+import { getLegendForMetric, isInMacedonia, reducer } from "@/utils/mapUtils";
 
 interface PollutionWidgetProps {
 	city: string;
@@ -214,90 +209,6 @@ export function PollutionWidget({
 						</Heading>
 						<LegendBar legend={getLegendForMetric(data.metric)} />
 					</Box>
-
-					{hasStations && (
-						<>
-							<Separator />
-							<Box>
-								<Heading size="sm" mb="2">
-									Stations ({validStations.length})
-								</Heading>
-								<VStack align="stretch" gap="2">
-									{validStations.map((station) => {
-										const stationLegend = frontendLegend.find(
-											(legendItem) =>
-												station.current.value >= legendItem.from &&
-												station.current.value <= legendItem.to,
-										);
-										const displayName = formatSensorName(
-											station.stationId,
-											station.name,
-										);
-
-										return (
-											<HStack
-												key={station.stationId}
-												p="3"
-												borderRadius="md"
-												border="1px solid"
-												borderColor="border"
-												justify="space-between"
-												wrap="wrap"
-												gap="2"
-											>
-												<HStack gap="2">
-													<Box
-														w="10px"
-														h="10px"
-														borderRadius="full"
-														flexShrink={0}
-														style={{
-															backgroundColor: stationLegend?.color ?? "#888",
-														}}
-													/>
-													<Text fontWeight="medium">{displayName}</Text>
-													{!station.isActive && (
-														<Badge
-															colorPalette="gray"
-															variant="subtle"
-															fontSize="xs"
-														>
-															Inactive
-														</Badge>
-													)}
-												</HStack>
-												<HStack gap="2">
-													<Text fontSize="sm">
-														{station.current.value} {data.unit}
-													</Text>
-													<Badge
-														variant="subtle"
-														fontSize="xs"
-														style={{
-															backgroundColor: stationLegend?.color ?? "#888",
-															color: "#fff",
-														}}
-													>
-														{stationLegend?.label ?? "—"}
-													</Badge>
-													{station.current.measuredAt && (
-														<Text fontSize="xs" color="fg.muted">
-															{new Date(
-																station.current.measuredAt,
-															).toLocaleTimeString([], {
-																hour: "2-digit",
-																minute: "2-digit",
-															})}
-														</Text>
-													)}
-												</HStack>
-											</HStack>
-										);
-									})}
-								</VStack>
-							</Box>
-						</>
-					)}
 				</>
 			)}
 

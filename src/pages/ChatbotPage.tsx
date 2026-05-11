@@ -31,7 +31,11 @@ export function ChatbotPage() {
 	};
 
 	return (
-		<VStack h="100vh" gap={0} bgGradient="linear(to-br, blue.50, purple.100)">
+		<VStack
+			minH="calc(100vh - 12rem)"
+			gap="12"
+			bgGradient="linear(to-br, blue.50, purple.100)"
+		>
 			{/* Header */}
 			<Box w="100%" p="4" bg="white" boxShadow="sm">
 				<Heading size="md">🤖 Smart City Chatbot</Heading>

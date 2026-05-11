@@ -87,7 +87,7 @@ export function PollutionHistoryChart({ metric, unit }: Props) {
 				bg="bg.panel"
 			>
 				<Skeleton h="18px" w="140px" mb="4" borderRadius="md" />
-				<Skeleton h="200px" borderRadius="md" />
+				<Skeleton h="180px" borderRadius="md" />
 			</Box>
 		);
 	}

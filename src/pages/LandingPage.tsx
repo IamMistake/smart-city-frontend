@@ -124,7 +124,7 @@ export function LandingPage() {
 	);
 
 	return (
-		<Stack gap={{ base: "8", md: "10" }}>
+		<Stack gap="12">
 			<HeroSection city={selectedCity} />
 			<ModulesSection />
 			<HowItWorksSection />

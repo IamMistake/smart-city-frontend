@@ -15,6 +15,23 @@ const config = defineConfig({
 			},
 
 			colors: {
+				brand: {
+					500: { value: "#16a34a" },
+				},
+				success: {
+					500: { value: "#22c55e" },
+				},
+				aqi: {
+					good: { value: "#4ade80" },
+					moderate: { value: "#facc15" },
+					high: { value: "#f87171" },
+				},
+				warning: {
+					500: { value: "#f59e0b" },
+				},
+				danger: {
+					500: { value: "#ef4444" },
+				},
 				accent: {
 					50: { value: "#e8f4ee" },
 					100: { value: "#cde8d9" },
@@ -33,6 +50,28 @@ const config = defineConfig({
 
 		semanticTokens: {
 			colors: {
+				brand: {
+					DEFAULT: { value: "{colors.brand.500}" },
+				},
+
+				success: {
+					DEFAULT: { value: "{colors.success.500}" },
+				},
+
+				aqi: {
+					good: { value: "{colors.aqi.good}" },
+					moderate: { value: "{colors.aqi.moderate}" },
+					high: { value: "{colors.aqi.high}" },
+				},
+
+				warning: {
+					DEFAULT: { value: "{colors.warning.500}" },
+				},
+
+				danger: {
+					DEFAULT: { value: "{colors.danger.500}" },
+				},
+
 				bg: {
 					DEFAULT: { value: { _light: "#ffffff", _dark: "#000000" } },
 					subtle: { value: { _light: "#f7f7f7", _dark: "#101010" } },
@@ -50,39 +89,39 @@ const config = defineConfig({
 				},
 
 				accent: {
-					solid: { value: "{colors.accent.700}" },
+					solid: { value: "{colors.brand.500}" },
 					contrast: { value: "#ffffff" },
-					fg: { value: "{colors.accent.600}" },
+					fg: { value: "{colors.brand.500}" },
 					muted: { value: "{colors.accent.100}" },
 					subtle: { value: "{colors.accent.200}" },
 					emphasized: { value: "{colors.accent.300}" },
-					focusRing: { value: "{colors.accent.500}" },
+					focusRing: { value: "{colors.brand.500}" },
 				},
 
 				incident: {
 					status: {
 						active: {
 							value: {
-								_light: "#22c55e",
-								_dark: "#4ade80",
+								_light: "{colors.brand.500}",
+								_dark: "{colors.brand.500}",
 							},
 						},
 						reported: {
 							value: {
-								_light: "#f59e0b",
-								_dark: "#fbbf24",
+								_light: "{colors.warning.500}",
+								_dark: "{colors.warning.500}",
 							},
 						},
 						rejected: {
 							value: {
-								_light: "#ef4444",
-								_dark: "#ff6b6b",
+								_light: "{colors.danger.500}",
+								_dark: "{colors.danger.500}",
 							},
 						},
 						resolved: {
 							value: {
-								_light: "#16a34a",
-								_dark: "#4ade80",
+								_light: "{colors.success.500}",
+								_dark: "{colors.success.500}",
 							},
 						},
 					},
@@ -90,8 +129,8 @@ const config = defineConfig({
 					priority: {
 						critical: {
 							value: {
-								_light: "#ef4444",
-								_dark: "#ff6b6b",
+								_light: "{colors.danger.500}",
+								_dark: "{colors.danger.500}",
 							},
 						},
 						high: {
@@ -102,14 +141,14 @@ const config = defineConfig({
 						},
 						medium: {
 							value: {
-								_light: "#eab308",
-								_dark: "#facc15",
+								_light: "{colors.warning.500}",
+								_dark: "{colors.warning.500}",
 							},
 						},
 						low: {
 							value: {
-								_light: "#22c55e",
-								_dark: "#4ade80",
+								_light: "{colors.brand.500}",
+								_dark: "{colors.brand.500}",
 							},
 						},
 					},

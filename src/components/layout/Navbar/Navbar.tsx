@@ -1,14 +1,16 @@
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
-import { Box, Button, Container, Flex, HStack, Icon } from "@chakra-ui/react";
+import { Show, UserButton } from "@clerk/react";
+import { Box, Container, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
-import { ThemeToggleButton } from "@/components/theme/ThemeToggleButton";
+import { useColorMode } from "@/components/ui/color-mode";
 import { ROUTES } from "@/constants/routes";
 import {
 	FaExclamationTriangle,
 	FaHome,
 	FaMap,
+	FaMoon,
 	FaRobot,
 	FaSmog,
+	FaSun,
 } from "react-icons/fa";
 
 const navItems = [
@@ -20,6 +22,9 @@ const navItems = [
 ];
 
 export function Navbar() {
+	const { colorMode, toggleColorMode } = useColorMode();
+	const isDark = colorMode === "dark";
+
 	return (
 		<Box
 			w="100%"
@@ -32,7 +37,12 @@ export function Navbar() {
 		>
 			<Container maxW="7xl" py={4}>
 				<Flex justify="space-between" align="center" gap={4}>
-					<HStack gap={4} flexWrap="wrap">
+					<HStack gap={6} flexWrap="wrap">
+						<NavLink to={ROUTES.home}>
+							<Text fontWeight="bold" color="fg" whiteSpace="nowrap">
+								Smart City
+							</Text>
+						</NavLink>
 						{navItems.map((item) => (
 							<NavLink key={item.to} to={item.to}>
 								{({ isActive }) => (
@@ -60,24 +70,19 @@ export function Navbar() {
 					</HStack>
 
 					<HStack gap={3}>
-						<Show when="signed-out">
-							<HStack gap={2}>
-								<SignInButton mode="modal">
-									<Button size="sm" colorPalette="accent">
-										Sign in
-									</Button>
-								</SignInButton>
-								<SignUpButton mode="modal">
-									<Button size="sm" variant="outline" colorPalette="accent">
-										Sign up
-									</Button>
-								</SignUpButton>
-							</HStack>
-						</Show>
 						<Show when="signed-in">
-							<UserButton />
+							<UserButton>
+								<UserButton.MenuItems>
+									<UserButton.Action
+										label={isDark ? "Switch to Light" : "Switch to Dark"}
+										labelIcon={
+											<Icon as={isDark ? FaSun : FaMoon} boxSize={4} />
+										}
+										onClick={toggleColorMode}
+									/>
+								</UserButton.MenuItems>
+							</UserButton>
 						</Show>
-						<ThemeToggleButton />
 					</HStack>
 				</Flex>
 			</Container>

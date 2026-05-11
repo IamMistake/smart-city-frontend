@@ -110,6 +110,6 @@ export const HISTORY_WINDOWS = [
 
 export const CHART_DIMENSIONS = {
 	W: 600,
-	H: 200,
+	H: 180,
 	PAD: { top: 16, right: 16, bottom: 32, left: 44 },
 } as const;

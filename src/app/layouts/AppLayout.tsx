@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/layout/Navbar/Navbar";
-import { Box, Container } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import { Footer } from "@/components/sections/Footer";
 
@@ -8,9 +8,16 @@ export function AppLayout() {
 		<Box minH="100vh" bg="bg" color="fg">
 			<Navbar />
 
-			<Container maxW="7xl" py="8">
+			<Box
+				as="main"
+				maxW="1200px"
+				mx="auto"
+				px={{ base: "4", md: "6" }}
+				pt="8"
+				pb="6"
+			>
 				<Outlet />
-			</Container>
+			</Box>
 
 			<Footer />
 		</Box>

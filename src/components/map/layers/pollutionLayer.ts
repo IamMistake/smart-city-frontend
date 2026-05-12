@@ -18,7 +18,10 @@ export const POLLUTION_LAYER_IDS = {
 	hit: "pollution-hit-area",
 	badge: "pollution-layer",
 	labels: "pollution-labels",
+	heatmap: "pollution-heatmap",
 } as const;
+
+export const POLLUTION_HEAT_SOURCE_ID = "pollution-heat-source";
 
 type OnPollutionClick = (
 	properties: PollutionFeatureProperties,
@@ -120,6 +123,102 @@ export function addPollutionLayer(
 			latitude,
 		]);
 	});
+}
+
+export function addPollutionHeatmapLayer(
+	map: maplibregl.Map,
+	data: FeatureCollection,
+) {
+	if (map.getSource(POLLUTION_HEAT_SOURCE_ID)) {
+		return;
+	}
+
+	const beforeLayerId = map.getLayer(POLLUTION_LAYER_IDS.badge)
+		? POLLUTION_LAYER_IDS.badge
+		: map.getStyle().layers?.find((layer) => layer.type === "symbol")?.id;
+
+	map.addSource(POLLUTION_HEAT_SOURCE_ID, { type: "geojson", data });
+
+	map.addLayer(
+		{
+			id: POLLUTION_LAYER_IDS.heatmap,
+			type: "heatmap",
+			source: POLLUTION_HEAT_SOURCE_ID,
+			paint: {
+				"heatmap-radius": [
+					"interpolate",
+					["linear"],
+					["zoom"],
+					9,
+					80,
+					13,
+					160,
+				],
+				"heatmap-weight": [
+					"interpolate",
+					["linear"],
+					["coalesce", ["get", "value"], 0],
+					0,
+					0,
+					50,
+					0.5,
+					150,
+					1,
+				],
+				"heatmap-intensity": [
+					"interpolate",
+					["linear"],
+					["zoom"],
+					9,
+					1,
+					13,
+					2,
+				],
+				"heatmap-color": [
+					"interpolate",
+					["linear"],
+					["heatmap-density"],
+					0,
+					"rgba(0, 0, 0, 0)",
+					0.1,
+					"rgba(80, 200, 100, 0.55)",
+					0.3,
+					"rgba(200, 220, 50, 0.60)",
+					0.5,
+					"rgba(255, 165, 0, 0.65)",
+					0.7,
+					"rgba(220, 60, 30, 0.70)",
+					1,
+					"rgba(150, 0, 50, 0.80)",
+				],
+				"heatmap-opacity": [
+					"interpolate",
+					["linear"],
+					["zoom"],
+					10,
+					0.9,
+					14,
+					0.4,
+				],
+			},
+		},
+		beforeLayerId,
+	);
+}
+
+export function setPollutionHeatmapVisibility(
+	map: maplibregl.Map,
+	visible: boolean,
+) {
+	if (!map.getLayer(POLLUTION_LAYER_IDS.heatmap)) {
+		return;
+	}
+
+	map.setLayoutProperty(
+		POLLUTION_LAYER_IDS.heatmap,
+		"visibility",
+		visible ? "visible" : "none",
+	);
 }
 
 export function removePollutionLayer(map: maplibregl.Map) {

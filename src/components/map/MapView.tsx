@@ -13,10 +13,13 @@ import {
 } from "./layers/eventLayer";
 import {
 	POLLUTION_LAYER_IDS,
+	POLLUTION_HEAT_SOURCE_ID,
 	POLLUTION_LEVEL_COLORS,
 	POLLUTION_LEVEL_LABELS,
 	addPollutionLayer,
+	addPollutionHeatmapLayer,
 	ensurePollutionIcons,
+	setPollutionHeatmapVisibility,
 } from "./layers/pollutionLayer";
 import { mockEvents } from "./mockData/mockEvents.ts";
 import { mockPollution } from "./mockData/mockPollution.ts";
@@ -178,6 +181,9 @@ export function MapView({
 		});
 	}, [filters.activePollutionLevels, filters.showPollution, showMockLayers]);
 
+	const showPollutionHeatmap =
+		showMockLayers && filters.showPollution && filters.showPollutionHeatmap;
+
 	const activeIncidents = useMemo(
 		() =>
 			visibleEvents.filter((feature) => feature.properties?.status === "ACTIVE")
@@ -335,6 +341,8 @@ export function MapView({
 				addPollutionLayer(map, mockPollution, (properties, lngLat) => {
 					setSelectedMarker({ kind: "pollution", lngLat, ...properties });
 				});
+
+				addPollutionHeatmapLayer(map, mockPollution);
 			}
 
 			setMapLoaded(true);
@@ -440,7 +448,7 @@ export function MapView({
 		}
 
 		const map = mapRef.current;
-		if (!map) {
+		if (!map || !map.isStyleLoaded()) {
 			return;
 		}
 
@@ -463,7 +471,18 @@ export function MapView({
 				features: visiblePollution,
 			});
 		}
-	}, [mapLoaded, showMockLayers, visibleEvents, visiblePollution]);
+
+		const heatSource = map.getSource(POLLUTION_HEAT_SOURCE_ID) as
+			| maplibregl.GeoJSONSource
+			| undefined;
+		if (heatSource) {
+			heatSource.setData({
+				type: "FeatureCollection",
+				features: visiblePollution,
+			});
+			setPollutionHeatmapVisibility(map, showPollutionHeatmap);
+		}
+	}, [mapLoaded, showMockLayers, showPollutionHeatmap, visibleEvents, visiblePollution]);
 
 	useEffect(() => {
 		const map = mapRef.current;
@@ -692,6 +711,7 @@ export function MapView({
 								...current,
 								showEvents: true,
 								showPollution: false,
+								showPollutionHeatmap: false,
 							}))
 						}
 					/>
@@ -704,6 +724,7 @@ export function MapView({
 								...current,
 								showEvents: false,
 								showPollution: true,
+								showPollutionHeatmap: true,
 								activePollutionLevels: [2],
 							}))
 						}
@@ -717,11 +738,38 @@ export function MapView({
 								...current,
 								showEvents: false,
 								showPollution: true,
+								showPollutionHeatmap: true,
 								activePollutionLevels: [airQualityLevel],
 							}))
 						}
-					/>
+						/>
 				</Flex>
+			)}
+
+			{showPollutionHeatmap && (
+				<Box
+					position="absolute"
+					bottom="28px"
+					right={drawerOpen ? "316px" : "10px"}
+					zIndex={10}
+					bg="white"
+					border="1px solid"
+					borderColor="rgba(0,0,0,0.15)"
+					borderRadius="6px"
+					px="10px"
+					py="6px"
+				>
+					<Box
+						h="10px"
+						w="180px"
+						borderRadius="4px"
+						bg="linear-gradient(to right, #50C864, #C8DC32, #FFA500, #DC3C1E, #960032)"
+					/>
+					<Flex justify="space-between" mt="4px" fontSize="10px" color="gray.500">
+						<Text>0 µg/m³</Text>
+						<Text>150+ µg/m³</Text>
+					</Flex>
+				</Box>
 			)}
 
 			{enableFocusGate && (

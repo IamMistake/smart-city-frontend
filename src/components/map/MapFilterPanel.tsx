@@ -174,9 +174,27 @@ export function MapFilterPanel({
 							onFiltersChange({
 								...filters,
 								showPollution: !filters.showPollution,
+								showPollutionHeatmap: !filters.showPollution,
 							})
 						}
 					>
+						<Flex align="center" justify="space-between" gap="12px">
+							<Text fontSize="13px" fontWeight="500" color="gray.700">
+								Pollution heatmap
+							</Text>
+							<ToggleSwitch
+								checked={filters.showPollutionHeatmap}
+								onToggle={() =>
+									onFiltersChange({
+									...filters,
+									showPollutionHeatmap: !filters.showPollutionHeatmap,
+								})
+								}
+								disabled={!filters.showPollution}
+							/>
+						</Flex>
+
+						<Box mt="12px">
 						<HStack gap="8px" flexWrap="wrap">
 							{ALL_POLLUTION_LEVELS.map((level) => (
 								<PillCheckbox
@@ -188,6 +206,7 @@ export function MapFilterPanel({
 								/>
 							))}
 						</HStack>
+						</Box>
 					</FilterSection>
 				</VStack>
 			</Box>
@@ -224,14 +243,16 @@ function FilterSection({
 function ToggleSwitch({
 	checked,
 	onToggle,
+	disabled = false,
 }: {
 	checked: boolean;
 	onToggle: () => void;
+	disabled?: boolean;
 }) {
 	return (
 		<Box
 			as="button"
-			onClick={onToggle}
+			onClick={disabled ? undefined : onToggle}
 			w="42px"
 			h="24px"
 			borderRadius="999px"
@@ -239,6 +260,9 @@ function ToggleSwitch({
 			position="relative"
 			transition="background 0.2s ease"
 			aria-pressed={checked}
+			aria-disabled={disabled}
+			cursor={disabled ? "not-allowed" : "pointer"}
+			opacity={disabled ? 0.5 : 1}
 		>
 			<Box
 				position="absolute"

@@ -33,6 +33,7 @@ export type SelectedMarker =
 export interface MapFilters {
 	showEvents: boolean;
 	showPollution: boolean;
+	showPollutionHeatmap: boolean;
 	activeEventTypes: IncidentType[];
 	activePollutionLevels: number[];
 }
@@ -51,6 +52,7 @@ export const ALL_POLLUTION_LEVELS = [1, 2, 3];
 export const DEFAULT_FILTERS: MapFilters = {
 	showEvents: true,
 	showPollution: true,
+	showPollutionHeatmap: true,
 	activeEventTypes: [...ALL_INCIDENT_TYPES],
 	activePollutionLevels: [...ALL_POLLUTION_LEVELS],
 };

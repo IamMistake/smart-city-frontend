@@ -16,18 +16,23 @@ import { FaRobot } from "react-icons/fa";
 import { LuArrowUp } from "react-icons/lu";
 
 import type { ChatMessage } from "@/models/chatbot";
+import type { PollutionData, PollutionMetric } from "@/models/pollution";
 import {
 	fetchChatbotModels,
 	sendChatbotMessage,
 } from "@/services/api/chatbotService";
+import { fetchPollutionData } from "@/services/api/pollutionService";
 import { normalizeApiError } from "@/types/api";
 
 const SUGGESTED_PROMPTS = [
 	"What's the air quality right now?",
 	"Show me active emergencies",
 	"Which areas have high pollution?",
+	"Give me Skopje's temperature and pollution stats today",
 	"Is there anything critical happening?",
 ];
+
+const SUMMARY_METRICS: PollutionMetric[] = ["temperature", "pm25", "pm10"];
 
 function BotAvatar(props: { boxSize?: string | number }) {
 	return (
@@ -101,6 +106,12 @@ export function ChatbotPage() {
 		setIsSending(true);
 
 		try {
+			const localReply = await buildLocalCitySummaryReply(text);
+			if (localReply) {
+				setMessages((prev) => [...prev, { role: "bot", text: localReply }]);
+				return;
+			}
+
 			const response = await sendChatbotMessage({
 				messages: nextMessages,
 				...(selectedModel ? { model: selectedModel } : {}),
@@ -312,4 +323,107 @@ export function ChatbotPage() {
 			</Box>
 		</Box>
 	);
+}
+
+async function buildLocalCitySummaryReply(message: string) {
+	if (!isCitySummaryPrompt(message)) {
+		return null;
+	}
+
+	const results = await Promise.allSettled(
+		SUMMARY_METRICS.map((metric) => fetchPollutionData(metric)),
+	);
+
+	const byMetric = Object.fromEntries(
+		results.map((result, index) => [
+			SUMMARY_METRICS[index],
+			result.status === "fulfilled" ? result.value : null,
+		]),
+	) as Record<PollutionMetric, PollutionData | null>;
+
+	const temperature = byMetric.temperature;
+	const pm25 = byMetric.pm25;
+	const pm10 = byMetric.pm10;
+
+	if (!temperature && !pm25 && !pm10) {
+		return null;
+	}
+
+	const parts = ["Skopje city update for today:"];
+
+	if (temperature?.summary.cityValue != null) {
+		parts.push(
+			`Temperature: ${temperature.summary.cityValue} ${temperature.unit} (${temperature.summary.statusText.toLowerCase()}).`,
+		);
+	}
+
+	if (pm25?.summary.cityValue != null) {
+		parts.push(
+			formatMetricSummary("PM2.5", pm25, {
+				includeStations: true,
+			}),
+		);
+	}
+
+	if (pm10?.summary.cityValue != null) {
+		parts.push(
+			formatMetricSummary("PM10", pm10, {
+				includeStations: false,
+			}),
+		);
+	}
+
+	const fetchedAt = [temperature, pm25, pm10]
+		.find((item) => item?.fetchedAt)
+		?.fetchedAt;
+	if (fetchedAt) {
+		parts.push(
+			`Last updated at ${new Date(fetchedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.`,
+		);
+	}
+
+	const missingMetrics = SUMMARY_METRICS.filter((metric) => !byMetric[metric]);
+	if (missingMetrics.length > 0) {
+		parts.push(
+			`Some data could not be loaded right now: ${missingMetrics.join(", ")}.`,
+		);
+	}
+
+	return parts.join(" ");
+}
+
+function isCitySummaryPrompt(message: string) {
+	const normalized = message.toLowerCase();
+	const asksForTemperature =
+		normalized.includes("temperature") || normalized.includes("weather");
+	const asksForPollution =
+		normalized.includes("pollution") ||
+		normalized.includes("air quality") ||
+		normalized.includes("pm2.5") ||
+		normalized.includes("pm25") ||
+		normalized.includes("pm10");
+	const asksForSummary =
+		normalized.includes("stats") ||
+		normalized.includes("summary") ||
+		normalized.includes("today") ||
+		normalized.includes("current") ||
+		normalized.includes("right now");
+
+	return asksForTemperature && (asksForPollution || asksForSummary);
+}
+
+function formatMetricSummary(
+	label: string,
+	data: PollutionData,
+	options: { includeStations: boolean },
+) {
+	const parts = [
+		`${label}: ${data.summary.cityValue} ${data.unit} (${data.summary.statusText.toLowerCase()})`,
+	];
+
+	if (options.includeStations) {
+		parts.push(`across ${data.coverage.activeStationCount} active stations`);
+	}
+
+	return `${parts.join(" ")}.`;
 }

@@ -54,7 +54,10 @@ export function ChatbotPage() {
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+		messagesEndRef.current?.scrollIntoView({
+			behavior: "smooth",
+			block: "end",
+		});
 	}, [messages, isSending]);
 
 	useEffect(() => {
@@ -87,7 +90,10 @@ export function ChatbotPage() {
 			return;
 		}
 
-		const nextMessages = [...messages, { role: "user", text } satisfies ChatMessage];
+		const nextMessages = [
+			...messages,
+			{ role: "user", text } satisfies ChatMessage,
+		];
 
 		setMessages(nextMessages);
 		setInput("");
@@ -103,7 +109,8 @@ export function ChatbotPage() {
 			setMessages((prev) => [...prev, { role: "bot", text: response.reply }]);
 		} catch (error) {
 			const apiError = normalizeApiError(error);
-			const message = apiError.message || "The assistant is unavailable right now.";
+			const message =
+				apiError.message || "The assistant is unavailable right now.";
 
 			setErrorText(message);
 			setMessages((prev) => [
@@ -163,7 +170,13 @@ export function ChatbotPage() {
 				</HStack>
 			</Flex>
 
-			<Box flex="1" minH="0" overflowY="auto" px={{ base: "4", md: "5" }} py="5">
+			<Box
+				flex="1"
+				minH="0"
+				overflowY="auto"
+				px={{ base: "4", md: "5" }}
+				py="5"
+			>
 				{showEmptyState ? (
 					<Flex minH="100%" align="center" justify="center" py="10">
 						<Box maxW="560px" textAlign="center">

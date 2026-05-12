@@ -41,7 +41,7 @@ export function createHttpClient(
 	const client = axios.create({
 		baseURL,
 		timeout: 15000,
-			headers: {
+		headers: {
 			"Content-Type": "application/json",
 		},
 	});

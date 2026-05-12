@@ -316,7 +316,7 @@ export default function IncidentList({ incidents, onResolved }: Props) {
 											>
 												Directions in Google Maps
 											</Button>
-									) : null}
+										) : null}
 										{selectedIncident.status === "ACTIVE" ? (
 											<Button
 												bg="success"

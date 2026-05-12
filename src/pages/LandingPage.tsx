@@ -199,7 +199,7 @@ export function LandingPage() {
 
 					{authTestResults["spring-service"].status === "error" ? (
 						<Text color="red.500" fontSize="sm">
-							Failed to provision current user through Spring `/api/auth/me`: {" "}
+							Failed to provision current user through Spring `/api/auth/me`:{" "}
 							{authTestResults["spring-service"].error}
 						</Text>
 					) : null}

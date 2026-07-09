@@ -1,6 +1,8 @@
 # Smart City Frontend
 
-Frontend application for the Smart City Monitoring Platform.
+Frontend application for the Smart City Monitoring Platform — a real-time dashboard for tracking city emergencies, air pollution, and municipal incidents.
+
+Built with **React 19**, **Vite 8**, **Chakra UI v3**, and **Clerk authentication**, it communicates with dual microservice backends (Spring Boot + FastAPI).
 
 ## Stack
 

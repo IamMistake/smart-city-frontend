@@ -1,100 +1,86 @@
 # Smart City Frontend
 
-Frontend application for the Smart City Monitoring Platform — a real-time dashboard for tracking city emergencies, air pollution, and municipal incidents.
+Frontend for the Smart City Monitoring Platform — a real-time dashboard for tracking city emergencies, air pollution, and municipal incidents.
 
-Built with **React 19**, **Vite 8**, **Chakra UI v3**, and **Clerk authentication**, it communicates with dual microservice backends (Spring Boot + FastAPI).
-
-## Stack
-
-- React 19
-- Vite 8
-- TypeScript 5
-- Chakra UI v3
-- React Router
-- Axios
-- Bun
+Built with **React 19**, **Vite 8**, **Chakra UI v3**, and **Clerk authentication**, communicating with dual microservice backends (Spring Boot + FastAPI).
 
 ## Getting started
 
-1. Install dependencies:
-
 ```bash
 bun install
-```
-
-2. Create environment file:
-
-```powershell
-# PowerShell (Windows)
-Copy-Item .env.example .env
-
-# Command Prompt (Windows)
-copy .env.example .env
-
-# macOS/Linux
 cp .env.example .env
-```
-
-3. Start development server:
-
-```bash
 bun run dev
 ```
 
-`bun` commands in this README work on Windows, macOS, and Linux.
+## Tech stack
+
+| | |
+|---|---|
+| **Framework** | React 19, Vite 8, TypeScript 5 |
+| **UI** | Chakra UI v3 |
+| **Auth** | Clerk |
+| **HTTP** | Axios |
+| **Runtime** | Bun |
 
 ## Scripts
 
-- `bun run dev` - start local dev server
-- `bun run build` - type-check build pipeline and create production build
-- `bun run lint` - run eslint with zero warnings allowed
-- `bun run format` - format source files with prettier
-- `bun run preview` - run production preview on port 5000
-- `bun run typecheck` - run TypeScript type checks
-- `bun run check` - lint + typecheck
+| Command | Description |
+|---|---|
+| `bun run dev` | Start local dev server |
+| `bun run build` | Type-check and build |
+| `bun run lint` | ESLint (zero warnings) |
+| `bun run format` | Format with Prettier |
+| `bun run preview` | Preview production build |
+| `bun run typecheck` | TypeScript checks |
+| `bun run check` | Lint + typecheck |
 
-## Environment variables
+## Environment
 
-- `VITE_SPRING_API_BASE_URL` - Spring Boot base URL (default `http://localhost:8080`)
-- `VITE_FASTAPI_API_BASE_URL` - FastAPI base URL (default `http://localhost:8000`)
+| Variable | Default | Description |
+|---|---|---|
+| `VITE_SPRING_API_BASE_URL` | `http://localhost:8080` | Spring Boot base URL |
+| `VITE_FASTAPI_API_BASE_URL` | `http://localhost:8000` | FastAPI base URL |
 
-## Routing
+## Routes
 
-- `/`
-- `/map`
-- `/emergencies`
-- `/pollution`
-- `/chatbot`
-- `/auth/login`
-- `/auth/register`
+| Path | Page |
+|---|---|
+| `/` | Landing |
+| `/map` | Emergency map |
+| `/emergencies` | Incident list |
+| `/pollution` | Air quality |
+| `/chatbot` | City assistant |
+| `/auth/login` | Sign in |
+| `/auth/register` | Sign up |
 
-## Architecture (hybrid)
+## Features
+
+- **Live emergency map** with incident markers
+- **Air pollution monitoring** — real-time and historical data
+- **City chatbot** — natural language queries
+- **Dual auth** — Clerk with Spring Boot + FastAPI backends
+- **Dark/light mode** with custom accent palette
+
+## Project structure
 
 ```text
 src/
-  app/         # app shell, router, top-level providers
-  components/  # reusable UI and view components
-  constants/   # route constants and app constants
-  context/     # global context providers (light app-level state)
-  hooks/       # reusable hooks
-  models/      # domain models
-  pages/       # route pages
-  services/    # axios http client + API services
-  styles/      # reusable style objects
-  theme/       # chakra theme system/tokens
-  types/       # shared TypeScript types
-  utils/       # pure helper functions
+  app/        # Shell, router, providers
+  components/ # Reusable UI components
+  constants/  # Route constants
+  context/   # Global state
+  hooks/    # Custom hooks
+  models/   # Domain models
+  pages/   # Route pages
+  services/ # Axios clients + API wrappers
+  styles/  # Style objects
+  theme/  # Chakra theme system
+  types/ # Shared TypeScript types
+  utils/ # Helper functions
 ```
-
-## Theme
-
-- Supports light/dark mode toggle (top-right button)
-- Uses custom dark-green accent palette via Chakra system config
-- Uses white/black centered visual base with semantic tokens
 
 ## API setup
 
-- `src/services/http/createHttpClient.ts` configures shared axios behavior
-- `src/services/http/springClient.ts` and `src/services/http/fastapiClient.ts` target each microservice
-- Request interceptor attaches bearer token from local storage
-- `src/services/api/healthService.ts` includes per-service and aggregate microservice health checks for `/api/health/`
+- Two axios clients in `src/services/http/` targeting each microservice
+- Bearer token attached via request interceptor
+- Health checks at `/api/health/` (per-service + aggregate)
